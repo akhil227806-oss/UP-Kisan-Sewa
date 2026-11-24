@@ -183,7 +183,7 @@ export default function AdminQuestionsPage() {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#854d0e] uppercase tracking-wider">
-              {lang === "hi" ? "लंबित प्रश्न (Pending)" : "Pending Review"}
+              {lang === "hi" ? "लंबित प्रश्न" : "Pending Review"}
             </span>
             <Clock className="size-5 text-[#ca8a04]" />
           </div>
@@ -200,7 +200,7 @@ export default function AdminQuestionsPage() {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#14532d] uppercase tracking-wider">
-              {lang === "hi" ? "समाधान प्रेषित (Answered)" : "Answered"}
+              {lang === "hi" ? "समाधान प्रेषित" : "Answered"}
             </span>
             <CheckCircle className="size-5 text-[#15803d]" />
           </div>
@@ -217,7 +217,7 @@ export default function AdminQuestionsPage() {
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-[#1e40af] uppercase tracking-wider">
-              {lang === "hi" ? "कुल परामर्श (Total)" : "Total Inquiries"}
+              {lang === "hi" ? "कुल परामर्श" : "Total Inquiries"}
             </span>
             <MessageSquare className="size-5 text-[#2563eb]" />
           </div>
@@ -279,7 +279,7 @@ export default function AdminQuestionsPage() {
                       </Badge>
                     ) : (
                       <Badge variant="warning">
-                        {lang === "hi" ? "समीक्षाधीन (Pending)" : "Pending Review"}
+                        {lang === "hi" ? "समीक्षाधीन" : "Pending Review"}
                       </Badge>
                     )}
                   </div>

@@ -90,7 +90,7 @@ export default function LoginPage() {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "मोबाइल नंबर अथवा ईमेल (Mobile / Email) *" : "Mobile Number or Email *"}
+              {lang === "hi" ? "मोबाइल नंबर अथवा ईमेल *" : "Mobile Number or Email *"}
             </label>
             <div className="relative">
               <User className="absolute left-3 top-3 size-4 text-[#9ca3af]" />
@@ -108,7 +108,7 @@ export default function LoginPage() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="text-xs font-bold text-[#14532d]">
-                {lang === "hi" ? "पासवर्ड (Password) *" : "Password *"}
+                {lang === "hi" ? "पासवर्ड *" : "Password *"}
               </label>
               <Link href="/forgot-password" className="text-xs text-[#0284c7] hover:underline font-semibold">
                 {lang === "hi" ? "पासवर्ड भूल गए?" : "Forgot password?"}

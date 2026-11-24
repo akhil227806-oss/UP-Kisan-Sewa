@@ -147,7 +147,7 @@ export default function SchemesPage() {
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="योजना का नाम खोजें (उदा. पीएम किसान, कुसुम, बीमा)..."
+              placeholder={lang === "hi" ? "योजना का नाम खोजें (उदा. पीएम किसान, कुसुम, बीमा)..." : "Search scheme name (e.g. PM Kisan, Kusum)..."}
               className="w-full pl-9 pr-4 py-2 border border-[#d1d5db] rounded-lg text-sm outline-none focus:border-[#15803d]"
             />
           </div>
@@ -179,22 +179,28 @@ export default function SchemesPage() {
                 <div className="flex items-start justify-between gap-2">
                   <CardTitle className="text-base sm:text-lg text-[#14532d] flex items-center gap-2">
                     <FileText className="size-5 text-[#15803d] shrink-0" />
-                    <span>{scheme.name_hi}</span>
+                    <span>{lang === "hi" ? scheme.name_hi : scheme.name_en}</span>
                   </CardTitle>
-                  <Badge variant="success" size="sm">{scheme.category_hi}</Badge>
+                  <Badge variant="success" size="sm">
+                    {lang === "hi" ? scheme.category_hi : (scheme.category_id === "central" ? "Central Scheme" : scheme.category_id === "insurance" ? "Crop Insurance" : scheme.category_id === "irrigation" ? "Irrigation & Solar" : scheme.category_id === "subsidy" ? "Farm Subsidy" : "State Scheme")}
+                  </Badge>
                 </div>
               </CardHeader>
 
               <CardContent className="space-y-3 pt-4 text-xs sm:text-sm">
                 <div>
-                  <strong className="text-[#14532d] block mb-0.5">अनुदान एवं लाभ:</strong>
+                  <strong className="text-[#14532d] block mb-0.5">
+                    {lang === "hi" ? "अनुदान एवं लाभ:" : "Benefits & Subsidy:"}
+                  </strong>
                   <p className="text-[#374151] bg-[#f0fdf4] p-2.5 rounded-lg border border-[#bbf7d0] leading-relaxed">
                     {scheme.benefit}
                   </p>
                 </div>
 
                 <div>
-                  <strong className="text-[#14532d] block mb-0.5">पात्रता मानदंड:</strong>
+                  <strong className="text-[#14532d] block mb-0.5">
+                    {lang === "hi" ? "पात्रता मानदंड:" : "Eligibility Criteria:"}
+                  </strong>
                   <p className="text-[#4b5563] leading-relaxed">{scheme.eligibility}</p>
                 </div>
               </CardContent>
@@ -207,7 +213,7 @@ export default function SchemesPage() {
                   href={`/schemes/${scheme.slug}`}
                   className="flex-1 inline-flex items-center justify-center gap-1 border border-[#15803d] text-[#15803d] hover:bg-[#dcfce7] text-xs font-bold py-2 rounded-lg transition-colors"
                 >
-                  <span>विस्तृत विवरण देखें</span>
+                  <span>{lang === "hi" ? "विस्तृत विवरण देखें" : "View Details"}</span>
                   <ChevronRight className="size-3.5" />
                 </Link>
                 <a
@@ -216,7 +222,7 @@ export default function SchemesPage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-1 bg-[#15803d] hover:bg-[#14532d] text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors"
                 >
-                  <span>आधिकारिक पोर्टल</span>
+                  <span>{lang === "hi" ? "आधिकारिक पोर्टल" : "Official Portal"}</span>
                   <ExternalLink className="size-3.5" />
                 </a>
               </div>

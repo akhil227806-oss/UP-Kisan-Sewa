@@ -153,11 +153,21 @@ export default function AskExpertPage() {
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full bg-[#f8faf5] border border-[#d1d5db] rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold outline-none focus:border-[#15803d]"
                 >
-                  <option value="रोग व फफूंद (Disease)">रोग व फफूंद (Crop Disease)</option>
-                  <option value="कीट व इल्ली (Pest)">कीट व इल्ली (Pest Attack)</option>
-                  <option value="उर्वरक व पीलापन (Nutrient)">उर्वरक व पीलापन (Nutrient Deficiency)</option>
-                  <option value="खरपतवार (Weed)">खरपतवार (Weed Problem)</option>
-                  <option value="सस्य क्रियाएं (Agronomy)">बुवाई व किस्म चयन (Agronomy)</option>
+                  <option value="रोग व फफूंद (Disease)">
+                    {lang === "hi" ? "रोग व फफूंद" : "Crop Disease"}
+                  </option>
+                  <option value="कीट व इल्ली (Pest)">
+                    {lang === "hi" ? "कीट व इल्ली" : "Pest Attack"}
+                  </option>
+                  <option value="उर्वरक व पीलापन (Nutrient)">
+                    {lang === "hi" ? "उर्वरक व पीलापन" : "Nutrient Deficiency"}
+                  </option>
+                  <option value="खरपतवार (Weed)">
+                    {lang === "hi" ? "खरपतवार समस्या" : "Weed Problem"}
+                  </option>
+                  <option value="सस्य क्रियाएं (Agronomy)">
+                    {lang === "hi" ? "बुवाई व किस्म चयन" : "Agronomy & Sowing"}
+                  </option>
                 </select>
               </div>
 
@@ -170,13 +180,13 @@ export default function AskExpertPage() {
                   onChange={(e) => setCrop(e.target.value)}
                   className="w-full bg-[#f8faf5] border border-[#d1d5db] rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold outline-none focus:border-[#15803d]"
                 >
-                  <option value="गेहूँ (Wheat)">गेहूँ (Wheat)</option>
-                  <option value="धान (Paddy)">धान (Paddy)</option>
-                  <option value="सरसों (Mustard)">सरसों (Mustard)</option>
-                  <option value="गन्ना (Sugarcane)">गन्ना (Sugarcane)</option>
-                  <option value="अरहर (Pigeon Pea)">अरहर (Pigeon Pea)</option>
-                  <option value="आलू (Potato)">आलू (Potato)</option>
-                  <option value="सब्जियां (Vegetables)">अन्य सब्जियां (Vegetables)</option>
+                  <option value="गेहूँ (Wheat)">{lang === "hi" ? "गेहूँ" : "Wheat"}</option>
+                  <option value="धान (Paddy)">{lang === "hi" ? "धान" : "Paddy"}</option>
+                  <option value="सरसों (Mustard)">{lang === "hi" ? "सरसों" : "Mustard"}</option>
+                  <option value="गन्ना (Sugarcane)">{lang === "hi" ? "गन्ना" : "Sugarcane"}</option>
+                  <option value="अरहर (Pigeon Pea)">{lang === "hi" ? "अरहर" : "Pigeon Pea"}</option>
+                  <option value="आलू (Potato)">{lang === "hi" ? "आलू" : "Potato"}</option>
+                  <option value="सब्जियां (Vegetables)">{lang === "hi" ? "अन्य सब्जियां" : "Vegetables"}</option>
                 </select>
               </div>
 
@@ -188,7 +198,7 @@ export default function AskExpertPage() {
                   type="text"
                   value={district}
                   onChange={(e) => setDistrict(e.target.value)}
-                  placeholder="उदा. अयोध्या, बाराबंकी"
+                  placeholder={lang === "hi" ? "उदा. अयोध्या, बाराबंकी" : "e.g. Ayodhya, Barabanki"}
                   required
                   className="w-full bg-[#f8faf5] border border-[#d1d5db] rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold outline-none focus:border-[#15803d]"
                 />
@@ -204,7 +214,7 @@ export default function AskExpertPage() {
                   type="text"
                   value={farmerName}
                   onChange={(e) => setFarmerName(e.target.value)}
-                  placeholder="पूरा नाम"
+                  placeholder={lang === "hi" ? "पूरा नाम" : "Full Name"}
                   required
                   className="w-full bg-[#f8faf5] border border-[#d1d5db] rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold outline-none focus:border-[#15803d]"
                 />
@@ -218,7 +228,7 @@ export default function AskExpertPage() {
                   type="tel"
                   value={farmerPhone}
                   onChange={(e) => setFarmerPhone(e.target.value)}
-                  placeholder="10-अंकीय मोबाइल"
+                  placeholder={lang === "hi" ? "10-अंकीय मोबाइल" : "10-digit mobile"}
                   required
                   className="w-full bg-[#f8faf5] border border-[#d1d5db] rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold outline-none focus:border-[#15803d]"
                 />

@@ -157,12 +157,12 @@ export default function MyQuestionsDashboard() {
                 {q.status === "answered" ? (
                   <Badge variant="success" size="sm" className="flex items-center gap-1 font-bold">
                     <CheckCircle2 className="size-3" />
-                    <span>{lang === "hi" ? "समाधान उपलब्ध (Answered)" : "Answered"}</span>
+                    <span>{lang === "hi" ? "समाधान उपलब्ध" : "Answered"}</span>
                   </Badge>
                 ) : (
                   <Badge variant="warning" size="sm" className="flex items-center gap-1 font-bold">
                     <Clock className="size-3" />
-                    <span>{lang === "hi" ? "समीक्षाधीन (Under Review)" : "Pending Review"}</span>
+                    <span>{lang === "hi" ? "समीक्षाधीन" : "Pending Review"}</span>
                   </Badge>
                 )}
               </div>

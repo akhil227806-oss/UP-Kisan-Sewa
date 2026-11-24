@@ -187,7 +187,7 @@ export default function ProfileDashboard() {
             >
               {ALL_75_UP_DISTRICTS.map((d) => (
                 <option key={d.code} value={lang === "hi" ? d.name_hi : d.name_en}>
-                  {lang === "hi" ? `${d.name_hi} (${d.name_en})` : `${d.name_en} (${d.name_hi})`}
+                  {lang === "hi" ? d.name_hi : d.name_en}
                 </option>
               ))}
             </select>
@@ -197,7 +197,7 @@ export default function ProfileDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "तहसील (Tehsil)" : "Tehsil"}
+              {lang === "hi" ? "तहसील" : "Tehsil"}
             </label>
             <input
               type="text"
@@ -209,7 +209,7 @@ export default function ProfileDashboard() {
           </div>
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "विकास खंड (Block)" : "Block"}
+              {lang === "hi" ? "विकास खंड" : "Block"}
             </label>
             <input
               type="text"
@@ -221,7 +221,7 @@ export default function ProfileDashboard() {
           </div>
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "गाँव (Village)" : "Village"}
+              {lang === "hi" ? "गाँव" : "Village"}
             </label>
             <input
               type="text"
@@ -236,7 +236,7 @@ export default function ProfileDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "पिन कोड (Pincode)" : "Pincode"}
+              {lang === "hi" ? "पिन कोड" : "PIN Code"}
             </label>
             <input
               type="text"
@@ -249,15 +249,15 @@ export default function ProfileDashboard() {
           </div>
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "पसंदीदा भाषा (Language Preference)" : "Language Preference"}
+              {lang === "hi" ? "पसंदीदा भाषा" : "Language Preference"}
             </label>
             <select
               value={lang}
               onChange={(e) => setLang(e.target.value as "hi" | "en")}
               className="w-full px-3 py-2 border rounded-lg text-sm bg-[#f8faf5]"
             >
+              <option value="en">English (English)</option>
               <option value="hi">हिन्दी (Hindi)</option>
-              <option value="en">English</option>
             </select>
           </div>
         </div>

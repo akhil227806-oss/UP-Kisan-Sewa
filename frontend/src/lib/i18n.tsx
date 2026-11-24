@@ -57,12 +57,16 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const [fontSize, setFontSizeState] = useState<FontSize>("md");
 
   useEffect(() => {
-    const savedLang = localStorage.getItem("uks-lang");
-    if (savedLang === "en" || savedLang === "hi") {
-      setLangState(savedLang);
-      document.documentElement.lang = savedLang;
+    // Default language is English ("en") across the portal
+    const savedLang = localStorage.getItem("uks-lang-v2");
+    if (savedLang === "hi") {
+      setLangState("hi");
+      document.documentElement.lang = "hi";
     } else {
+      setLangState("en");
       document.documentElement.lang = "en";
+      localStorage.setItem("uks-lang-v2", "en");
+      localStorage.setItem("uks-lang", "en");
     }
 
     const savedFont = localStorage.getItem("uks-font-size");
@@ -76,6 +80,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l);
+    localStorage.setItem("uks-lang-v2", l);
     localStorage.setItem("uks-lang", l);
     document.documentElement.lang = l;
 

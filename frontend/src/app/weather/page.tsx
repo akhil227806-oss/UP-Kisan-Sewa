@@ -176,23 +176,23 @@ export default function WeatherPage() {
       <div className="bg-white p-6 rounded-xl border border-[#e5e7eb] shadow-xs mb-8">
         <h4 className="font-bold text-[#14532d] text-base mb-3 flex items-center gap-2">
           <Thermometer className="size-5 text-[#f97316]" />
-          <span>{lang === "hi" ? "मौसम आधारित कृषि सलाह (Agro-Advisory for Farmers)" : "Weather-Based Scientific Advisory"}</span>
+          <span>{lang === "hi" ? "मौसम आधारित कृषि सलाह" : "Weather-Based Scientific Advisory"}</span>
         </h4>
         <div className="space-y-2 text-xs sm:text-sm text-[#374151] leading-relaxed">
           <p>
-            • <strong>{lang === "hi" ? "गेहूँ (Wheat): " : "Wheat: "}</strong>
+            • <strong>{lang === "hi" ? "गेहूँ: " : "Wheat: "}</strong>
             {lang === "hi"
               ? "मौसम शुष्क रहने की संभावना है। दाना पकने की अवस्था में तेज पछुआ हवा के दौरान सिंचाई से बचें ताकि फसल गिरे नहीं।"
               : "Dry weather expected. Avoid irrigation during strong westerly winds at grain-filling stage to prevent crop lodging."}
           </p>
           <p>
-            • <strong>{lang === "hi" ? "सब्जियां व जायद फसलें (Zaid Crops): " : "Vegetables & Zaid Crops: "}</strong>
+            • <strong>{lang === "hi" ? "सब्जियां व जायद फसलें: " : "Vegetables & Zaid Crops: "}</strong>
             {lang === "hi"
               ? "मूंग व उड़द की बुवाई हेतु खेत की तैयारी एवं पलेवा का कार्य पूर्ण करें।"
               : "Complete field preparation and pre-sowing irrigation for green gram (Moong) and black gram (Urad)."}
           </p>
           <p>
-            • <strong>{lang === "hi" ? "बागवानी (Horticulture): " : "Horticulture: "}</strong>
+            • <strong>{lang === "hi" ? "बागवानी: " : "Horticulture: "}</strong>
             {lang === "hi"
               ? "आम के बौर में भुनगा (हॉपर) एवं चूर्णिल आसिता (पाउडरी मिल्ड्यू) की नियमित निगरानी रखें।"
               : "Monitor mango panicles regularly for mango hopper and powdery mildew infestation."}

@@ -609,9 +609,9 @@ export default function AdminDashboardPage() {
               className="py-1.5 px-2.5 border border-[#d1d5db] rounded-lg text-xs bg-white text-[#374151]"
             >
               <option value="all">{lang === "hi" ? "सभी स्थितियाँ" : "All Statuses"}</option>
-              <option value="active">{lang === "hi" ? "सक्रिय (Active)" : "Active"}</option>
-              <option value="pending">{lang === "hi" ? "लंबित (Pending)" : "Pending Review"}</option>
-              <option value="inactive">{lang === "hi" ? "निष्क्रिय (Inactive)" : "Inactive"}</option>
+              <option value="active">{lang === "hi" ? "सक्रिय" : "Active"}</option>
+              <option value="pending">{lang === "hi" ? "लंबित" : "Pending Review"}</option>
+              <option value="inactive">{lang === "hi" ? "निष्क्रिय" : "Inactive"}</option>
             </select>
           </div>
         </div>
@@ -621,13 +621,13 @@ export default function AdminDashboardPage() {
           <table className="w-full text-left border-collapse text-xs">
             <thead>
               <tr className="bg-[#f8faf5] text-[#14532d] font-bold border-b border-[#e5e7eb]">
-                <th className="p-3.5">किसान / उपयोगकर्ता (Name)</th>
-                <th className="p-3.5">संपर्क सूत्र (Contact)</th>
-                <th className="p-3.5">स्थान (Administrative Address)</th>
-                <th className="p-3.5">भूमिका (Role)</th>
-                <th className="p-3.5">सत्यापन स्थिति (Verification)</th>
-                <th className="p-3.5">खाता स्थिति (Status)</th>
-                <th className="p-3.5 text-center">कार्रवाई (Action)</th>
+                <th className="p-3.5">{lang === "hi" ? "किसान / उपयोगकर्ता" : "Farmer / User"}</th>
+                <th className="p-3.5">{lang === "hi" ? "संपर्क सूत्र" : "Contact"}</th>
+                <th className="p-3.5">{lang === "hi" ? "स्थान" : "Administrative Address"}</th>
+                <th className="p-3.5">{lang === "hi" ? "भूमिका" : "Role"}</th>
+                <th className="p-3.5">{lang === "hi" ? "सत्यापन स्थिति" : "Verification"}</th>
+                <th className="p-3.5">{lang === "hi" ? "खाता स्थिति" : "Account Status"}</th>
+                <th className="p-3.5 text-center">{lang === "hi" ? "कार्रवाई" : "Action"}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#e5e7eb]">
@@ -656,7 +656,8 @@ export default function AdminDashboardPage() {
                       {u.district || "—"}{u.tehsil ? `, ${u.tehsil}` : ""}
                     </div>
                     <div className="text-[11px] text-[#6b7280]">
-                      {u.block ? `ब्लॉक: ${u.block}` : ""}{u.village ? ` • गाँव: ${u.village}` : ""}
+                      {u.block ? (lang === "hi" ? `ब्लॉक: ${u.block}` : `Block: ${u.block}`) : ""}
+                      {u.village ? (lang === "hi" ? ` • गाँव: ${u.village}` : ` • Village: ${u.village}`) : ""}
                       {u.pincode ? ` (${u.pincode})` : ""}
                     </div>
                   </td>
@@ -679,12 +680,12 @@ export default function AdminDashboardPage() {
                     {u.email_verified ? (
                       <span className="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-semibold">
                         <CheckCircle className="size-3" />
-                        <span>सत्यापित (Verified)</span>
+                        <span>{lang === "hi" ? "सत्यापित" : "Verified"}</span>
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 font-semibold">
                         <Clock className="size-3" />
-                        <span>लंबित (Unverified)</span>
+                        <span>{lang === "hi" ? "लंबित" : "Pending"}</span>
                       </span>
                     )}
                   </td>
@@ -741,7 +742,7 @@ export default function AdminDashboardPage() {
 
           {filteredUsers.length === 0 && (
             <div className="p-8 text-center text-xs text-[#6b7280]">
-              कोई मेल खाता उपयोगकर्ता नहीं मिला (No matching user found)
+              {lang === "hi" ? "कोई मेल खाता उपयोगकर्ता नहीं मिला" : "No matching users found"}
             </div>
           )}
         </div>
@@ -772,43 +773,45 @@ export default function AdminDashboardPage() {
             <div className="space-y-3 text-xs">
               <div className="grid grid-cols-2 gap-3 p-3 bg-[#f8faf5] rounded-xl border border-[#e5e7eb]">
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">ईमेल:</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "ईमेल:" : "Email:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.email}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">मोबाइल:</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "मोबाइल:" : "Mobile:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.phone}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">जनपद:</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "जनपद:" : "District:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.district}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">तहसील:</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "तहसील:" : "Tehsil:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.tehsil || "—"}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">विकास खंड (Block):</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "विकास खंड:" : "Block:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.block || "—"}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">गाँव:</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "गाँव:" : "Village:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.village || "—"}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">पिन कोड:</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "पिन कोड:" : "PIN Code:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.pincode || "—"}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">ईमेल सत्यापन:</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "ईमेल सत्यापन:" : "Email Verified:"}</span>
                   <span className="font-semibold text-[#14532d]">
-                    {selectedUser.email_verified ? "सत्यापित (Yes)" : "लंबित (No)"}
+                    {selectedUser.email_verified
+                      ? (lang === "hi" ? "सत्यापित" : "Yes")
+                      : (lang === "hi" ? "लंबित" : "No")}
                   </span>
                 </div>
               </div>
 
               <div>
-                <span className="text-[#6b7280] block text-[10px]">पंजीकरण समय:</span>
+                <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "पंजीकरण समय:" : "Registered At:"}</span>
                 <span className="text-[#374151] font-mono text-[11px]">{selectedUser.created_at}</span>
               </div>
             </div>

@@ -13,26 +13,25 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: "अवध किसान सेवा | Kisan Ki Pragati, Pradesh Ki Samriddhi",
-    template: "%s | अवध किसान सेवा (Awadh Kisan Seva)",
+    default: "Awadh Kisan Seva | Digital Farmer Support Platform for UP",
+    template: "%s | Awadh Kisan Seva",
   },
   description:
-    "अवध क्षेत्र एवं उत्तर प्रदेश के किसानों के लिए डिजिटल कृषि सहायता मंच — फसल सलाह, मंडी भाव, मौसम, सरकारी योजनाएँ और विशेषज्ञ परामर्श।",
+    "Digital agriculture support platform for farmers of Uttar Pradesh — verified crop packages, daily mandi prices, agro-weather advisories, government schemes, and expert consultation.",
   keywords: [
     "Awadh Kisan Seva",
-    "अवध किसान सेवा",
     "Kisan Seva UP",
-    "Mandi Bhav UP",
+    "UP Agriculture Support",
+    "Mandi Prices UP",
     "UP Agriculture Schemes",
-    "Crop Advisory Awadh",
-    "Kheti Kisani UP",
+    "Crop Advisory UP",
   ],
   authors: [{ name: "Awadh Kisan Seva Project Team" }],
   openGraph: {
-    title: "अवध किसान सेवा — डिजिटल कृषि सहायता मंच",
-    description: "किसान की प्रगति, प्रदेश की समृद्धि — प्रमाणित कृषि सलाह, मंडी भाव व सरकारी योजनाएँ",
+    title: "Awadh Kisan Seva — Digital Agriculture Support Platform",
+    description: "Farmer's Progress, State's Prosperity — Certified crop guidance, live mandi rates & government schemes",
     siteName: "Awadh Kisan Seva",
-    locale: "hi_IN",
+    locale: "en_IN",
     type: "website",
   },
 };

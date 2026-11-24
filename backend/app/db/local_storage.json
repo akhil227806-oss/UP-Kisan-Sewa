@@ -1225,11 +1225,120 @@
       "created_at": "2026-11-22T17:16:44.956780",
       "expires_at": "2026-11-22T17:21:44.956780",
       "_id": "6b03237d7fbd39f321918b10"
+    },
+    {
+      "email": "upkisansewa@gmail.com",
+      "otp_hash": "0ac3067de9b1c9b07e083083a7a23c4d8f7fdf71c72effa97b8e0dfda92446a3",
+      "attempts": 0,
+      "created_at": "2026-11-23T20:13:00.475831",
+      "expires_at": "2026-11-23T20:18:00.475831",
+      "_id": "6b049e4cb1c161bbf33ae783"
+    },
+    {
+      "email": "upkisansewa+test@gmail.com",
+      "otp_hash": "5e6f769ed7d0ed890187c97baf27950162e7ad421e451b35e655733e60c1c986",
+      "attempts": 0,
+      "created_at": "2026-11-23T20:19:32.245139",
+      "expires_at": "2026-11-23T20:24:32.245139",
+      "_id": "6b049fd4b1c161bbf33ae785"
+    },
+    {
+      "email": "dineshkumaryadav12651@gmail.cm",
+      "otp_hash": "f54ecfb24378e804e6eac48b5a2cfe11613d66609cc1e2f3854c046ad47f1d77",
+      "attempts": 0,
+      "created_at": "2026-11-24T12:08:28.161206",
+      "expires_at": "2026-11-24T12:13:28.161206",
+      "_id": "6b057e3cb1c161bbf33ae787"
+    },
+    {
+      "email": "dineshkumaryadav12652@gmail.com",
+      "otp_hash": "4f42a1b3de65ba5dbe79a68c3bad4f2f5583434403067a27b48f64ebaa1413fd",
+      "attempts": 0,
+      "created_at": "2026-11-24T12:11:29.559027",
+      "expires_at": "2026-11-24T12:16:29.559027",
+      "_id": "6b057ef1b1c161bbf33ae789"
+    },
+    {
+      "email": "dineshkumaryadav12652@gmail.cm",
+      "otp_hash": "0a72e330bace3eef2a54d8a427983bd68ecad350ff825b2998789de17e089f5c",
+      "attempts": 0,
+      "created_at": "2026-11-24T15:28:37.204300",
+      "expires_at": "2026-11-24T15:33:37.204300",
+      "_id": "6b05ad25b09f331c09bebc65"
+    },
+    {
+      "email": "collegelife2024p@gmail.com",
+      "otp_hash": "4c2e674a384ef6036bc199cd50cf500e00d9d33c8267e1d373764da5748667ae",
+      "attempts": 0,
+      "created_at": "2026-11-24T15:29:32.725987",
+      "expires_at": "2026-11-24T15:34:32.725987",
+      "_id": "6b05ad5cb09f331c09bebc67"
     }
   ],
   "content_register": [],
   "settings": [],
-  "email_verifications": [],
+  "email_verifications": [
+    {
+      "email": "upkisansewa@gmail.com",
+      "otp_hash": "0ac3067de9b1c9b07e083083a7a23c4d8f7fdf71c72effa97b8e0dfda92446a3",
+      "attempts": 0,
+      "verified": true,
+      "created_at": "2026-11-23T20:13:00.475831",
+      "expires_at": "2026-11-23T20:18:00.475831",
+      "_id": "6b049e4cb1c161bbf33ae782",
+      "verification_token": "d1fb6c231fe8c6eead7a07156748ca93f94f6d59c00da86bf76d98858b15aee4",
+      "verified_at": "2026-11-23T20:15:59.709151",
+      "token_expires_at": "2026-11-23T20:45:59.709151"
+    },
+    {
+      "email": "upkisansewa+test@gmail.com",
+      "otp_hash": "5e6f769ed7d0ed890187c97baf27950162e7ad421e451b35e655733e60c1c986",
+      "attempts": 0,
+      "verified": false,
+      "created_at": "2026-11-23T20:19:32.245139",
+      "expires_at": "2026-11-23T20:24:32.245139",
+      "_id": "6b049fd4b1c161bbf33ae784"
+    },
+    {
+      "email": "dineshkumaryadav12651@gmail.cm",
+      "otp_hash": "f54ecfb24378e804e6eac48b5a2cfe11613d66609cc1e2f3854c046ad47f1d77",
+      "attempts": 0,
+      "verified": false,
+      "created_at": "2026-11-24T12:08:28.161206",
+      "expires_at": "2026-11-24T12:13:28.161206",
+      "_id": "6b057e3cb1c161bbf33ae786"
+    },
+    {
+      "email": "dineshkumaryadav12652@gmail.com",
+      "otp_hash": "4f42a1b3de65ba5dbe79a68c3bad4f2f5583434403067a27b48f64ebaa1413fd",
+      "attempts": 0,
+      "verified": true,
+      "created_at": "2026-11-24T12:11:29.559027",
+      "expires_at": "2026-11-24T12:16:29.559027",
+      "_id": "6b057ef1b1c161bbf33ae788",
+      "verification_token": "d3442f622b7613714eca1839deb0057eaa401e8734dded1e213e9e591132ae90",
+      "verified_at": "2026-11-24T12:12:18.869324",
+      "token_expires_at": "2026-11-24T12:42:18.869324"
+    },
+    {
+      "email": "dineshkumaryadav12652@gmail.cm",
+      "otp_hash": "0a72e330bace3eef2a54d8a427983bd68ecad350ff825b2998789de17e089f5c",
+      "attempts": 0,
+      "verified": false,
+      "created_at": "2026-11-24T15:28:37.204300",
+      "expires_at": "2026-11-24T15:33:37.204300",
+      "_id": "6b05ad25b09f331c09bebc64"
+    },
+    {
+      "email": "collegelife2024p@gmail.com",
+      "otp_hash": "4c2e674a384ef6036bc199cd50cf500e00d9d33c8267e1d373764da5748667ae",
+      "attempts": 0,
+      "verified": false,
+      "created_at": "2026-11-24T15:29:32.725987",
+      "expires_at": "2026-11-24T15:34:32.725987",
+      "_id": "6b05ad5cb09f331c09bebc66"
+    }
+  ],
   "announcements": [
     {
       "title_hi": "\u0915\u0943\u0937\u093f \u092f\u0902\u0924\u094d\u0930\u0940\u0915\u0930\u0923 \u0908-\u0932\u0949\u091f\u0930\u0940 \u091f\u094b\u0915\u0928 \u092c\u0941\u0915\u093f\u0902\u0917 \u092a\u094b\u0930\u094d\u091f\u0932 \u0938\u0915\u094d\u0930\u093f\u092f",

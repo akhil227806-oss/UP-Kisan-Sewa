@@ -231,7 +231,7 @@ export default function MandiPage() {
         />
       </div>
 
-      <Alert type="info" title={lang === "hi" ? "डेटा पारदर्शिता सूचना (Data Transparency Notice)" : "Data Transparency Notice"} className="mb-6">
+      <Alert type="info" title={lang === "hi" ? "डेटा पारदर्शिता सूचना" : "Data Transparency Notice"} className="mb-6">
         {lang === "hi"
           ? "मंडी भाव सीधे भारत सरकार के आधिकारिक एगमार्कनेट (Agmarknet / data.gov.in) पोर्टल द्वारा दर्ज किए जाते हैं। आगमन की तिथि एवं बाजार का नाम अवश्य जांचें।"
           : "Mandi prices are reported directly from Government of India Agmarknet / data.gov.in wholesale market records. Verify arrival date and market name."}
@@ -242,7 +242,7 @@ export default function MandiPage() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "जनपद चुनें (Select District)" : "Select District"}
+              {lang === "hi" ? "जनपद चुनें" : "Select District"}
             </label>
             <select
               value={district}
@@ -250,11 +250,11 @@ export default function MandiPage() {
               className="w-full bg-[#f8faf5] border border-[#d1d5db] rounded-lg px-3 py-2 text-sm font-semibold outline-none focus:border-[#15803d]"
             >
               <option value="all">
-                {lang === "hi" ? "सभी 75 जनपद (All Districts)" : "All 75 Districts"}
+                {lang === "hi" ? "सभी 75 जनपद" : "All 75 Districts"}
               </option>
               {ALL_75_UP_DISTRICTS.map((d) => (
                 <option key={d.code} value={lang === "hi" ? d.name_hi : d.name_en}>
-                  {lang === "hi" ? `${d.name_hi} (${d.name_en})` : `${d.name_en} (${d.name_hi})`}
+                  {lang === "hi" ? d.name_hi : d.name_en}
                 </option>
               ))}
             </select>
@@ -262,7 +262,7 @@ export default function MandiPage() {
 
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              {lang === "hi" ? "फसल / जिंस खोजें (Search Commodity)" : "Search Commodity"}
+              {lang === "hi" ? "फसल / जिंस खोजें" : "Search Commodity"}
             </label>
             <div className="relative">
               <Search className="absolute left-3 top-2.5 size-4 text-[#9ca3af]" />
@@ -296,13 +296,13 @@ export default function MandiPage() {
           <table className="w-full text-left border-collapse text-xs sm:text-sm">
             <thead>
               <tr className="bg-[#14532d] text-white font-bold">
-                <th className="p-3.5">{lang === "hi" ? "जनपद (District)" : "District"}</th>
-                <th className="p-3.5">{lang === "hi" ? "मंडी का नाम (Market)" : "Market"}</th>
-                <th className="p-3.5">{lang === "hi" ? "फसल / जिंस (Commodity)" : "Commodity"}</th>
+                <th className="p-3.5">{lang === "hi" ? "जनपद" : "District"}</th>
+                <th className="p-3.5">{lang === "hi" ? "मंडी का नाम" : "Market"}</th>
+                <th className="p-3.5">{lang === "hi" ? "फसल / जिंस" : "Commodity"}</th>
                 <th className="p-3.5 text-right">{lang === "hi" ? "न्यूनतम भाव (₹)" : "Min Price (₹)"}</th>
                 <th className="p-3.5 text-right">{lang === "hi" ? "अधिकतम भाव (₹)" : "Max Price (₹)"}</th>
                 <th className="p-3.5 text-right bg-[#15803d]">
-                  {lang === "hi" ? "मॉडल भाव (Modal ₹)" : "Modal Rate (₹)"}
+                  {lang === "hi" ? "मॉडल भाव (₹)" : "Modal Rate (₹)"}
                 </th>
                 <th className="p-3.5 text-center">{lang === "hi" ? "आगमन तिथि" : "Arrival Date"}</th>
               </tr>

@@ -42,7 +42,9 @@ export default function FarmerDashboard() {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 text-center">
         <div className="size-10 border-4 border-[#15803d] border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-sm text-[#4b5563]">डैशबोर्ड लोड हो रहा है (Loading Dashboard)...</p>
+        <p className="text-sm text-[#4b5563]">
+          {lang === "hi" ? "डैशबोर्ड लोड हो रहा है..." : "Loading Dashboard..."}
+        </p>
       </div>
     );
   }
@@ -66,7 +68,7 @@ export default function FarmerDashboard() {
           <div className="flex flex-col gap-2.5">
             <Link href="/login">
               <Button variant="primary" size="md" fullWidth>
-                <span>{lang === "hi" ? "लॉगिन करें (Sign In)" : "Sign In"}</span>
+                <span>{lang === "hi" ? "लॉगिन करें" : "Sign In"}</span>
               </Button>
             </Link>
             <Link href="/register">
@@ -119,7 +121,9 @@ export default function FarmerDashboard() {
                   किसान आईडी: #UPKS-{user.id ? user.id.slice(-6).toUpperCase() : "4892"}
                 </Badge>
                 <span className="text-[11px] bg-white/20 px-2 py-0.5 rounded-full font-semibold">
-                  {user.role === "super_admin" || user.role === "admin" ? "प्रशासक (Admin)" : "प्रमाणित किसान (Farmer)"}
+                  {user.role === "super_admin" || user.role === "admin"
+                    ? (lang === "hi" ? "प्रशासक" : "Administrator")
+                    : (lang === "hi" ? "प्रमाणित किसान" : "Verified Farmer")}
                 </span>
               </div>
             </div>
@@ -129,9 +133,9 @@ export default function FarmerDashboard() {
             <MapPin className="size-4 shrink-0" />
             <span>
               {user.village ? `${user.village}, ` : ""}
-              {user.block ? `ब्लॉक: ${user.block}, ` : ""}
-              {user.tehsil ? `तहसील: ${user.tehsil}, ` : ""}
-              {user.district ? `जनपद: ${user.district} ` : ""}
+              {user.block ? (lang === "hi" ? `ब्लॉक: ${user.block}, ` : `Block: ${user.block}, `) : ""}
+              {user.tehsil ? (lang === "hi" ? `तहसील: ${user.tehsil}, ` : `Tehsil: ${user.tehsil}, `) : ""}
+              {user.district ? (lang === "hi" ? `जनपद: ${user.district} ` : `District: ${user.district} `) : ""}
               {user.pincode ? `(${user.pincode})` : ""}
             </span>
           </p>
@@ -166,7 +170,7 @@ export default function FarmerDashboard() {
             </h3>
             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#15803d] bg-[#dcfce7] px-2.5 py-0.5 rounded-full border border-[#86efac]">
               <CheckCircle2 className="size-3" />
-              {lang === "hi" ? "सत्यापित खाता" : "Verified"}
+              {lang === "hi" ? "सत्यापित खाता" : "Verified Account"}
             </span>
           </div>
 
@@ -181,7 +185,7 @@ export default function FarmerDashboard() {
                 <span className="text-xs text-[#6b7280] block">{lang === "hi" ? "मोबाइल नंबर:" : "Mobile:"}</span>
                 <p className="font-semibold text-[#1f2937] flex items-center gap-1">
                   <Phone className="size-3.5 text-[#15803d]" />
-                  <span>{user.phone || "उपलब्ध नहीं"}</span>
+                  <span>{user.phone || (lang === "hi" ? "उपलब्ध नहीं" : "N/A")}</span>
                 </p>
               </div>
               <div>
@@ -194,35 +198,39 @@ export default function FarmerDashboard() {
 
             <div className="pt-2 border-t border-[#f3f4f6] space-y-2">
               <span className="text-xs font-bold text-[#14532d] block uppercase tracking-wider">
-                {lang === "hi" ? "प्रशासनिक पता (UP Location):" : "Location Details:"}
+                {lang === "hi" ? "प्रशासनिक पता:" : "Location Details:"}
               </span>
 
               <div className="grid grid-cols-2 gap-2 text-xs">
                 <div className="bg-[#f8faf5] p-2 rounded-lg border border-[#e5e7eb]">
-                  <span className="text-[#6b7280] block">जनपद (District)</span>
-                  <span className="font-bold text-[#14532d]">{user.district || "अयोध्या"}</span>
+                  <span className="text-[#6b7280] block">{lang === "hi" ? "जनपद" : "District"}</span>
+                  <span className="font-bold text-[#14532d]">{user.district || (lang === "hi" ? "अयोध्या" : "Ayodhya")}</span>
                 </div>
                 <div className="bg-[#f8faf5] p-2 rounded-lg border border-[#e5e7eb]">
-                  <span className="text-[#6b7280] block">तहसील (Tehsil)</span>
-                  <span className="font-bold text-[#14532d]">{user.tehsil || "सदर"}</span>
+                  <span className="text-[#6b7280] block">{lang === "hi" ? "तहसील" : "Tehsil"}</span>
+                  <span className="font-bold text-[#14532d]">{user.tehsil || (lang === "hi" ? "सदर" : "Sadar")}</span>
                 </div>
                 <div className="bg-[#f8faf5] p-2 rounded-lg border border-[#e5e7eb]">
-                  <span className="text-[#6b7280] block">विकास खंड (Block)</span>
-                  <span className="font-bold text-[#14532d]">{user.block || "सदर"}</span>
+                  <span className="text-[#6b7280] block">{lang === "hi" ? "विकास खंड" : "Block"}</span>
+                  <span className="font-bold text-[#14532d]">{user.block || (lang === "hi" ? "सदर" : "Sadar")}</span>
                 </div>
                 <div className="bg-[#f8faf5] p-2 rounded-lg border border-[#e5e7eb]">
-                  <span className="text-[#6b7280] block">ग्राम (Village)</span>
-                  <span className="font-bold text-[#14532d]">{user.village || "ग्राम"}</span>
+                  <span className="text-[#6b7280] block">{lang === "hi" ? "ग्राम" : "Village"}</span>
+                  <span className="font-bold text-[#14532d]">{user.village || (lang === "hi" ? "ग्राम" : "Village")}</span>
                 </div>
               </div>
 
               <div className="bg-[#f0fdf4] p-2.5 rounded-lg border border-[#bbf7d0] flex items-center justify-between text-xs">
                 <div>
-                  <span className="text-[#14532d] font-bold block">पिन कोड: {user.pincode || "224001"}</span>
-                  <span className="text-[11px] text-[#4b5563]">{user.post_office || "मुख्य डाकघर"}</span>
+                  <span className="text-[#14532d] font-bold block">
+                    {lang === "hi" ? "पिन कोड: " : "PIN Code: "}{user.pincode || "224001"}
+                  </span>
+                  <span className="text-[11px] text-[#4b5563]">
+                    {user.post_office || (lang === "hi" ? "मुख्य डाकघर" : "Head Post Office")}
+                  </span>
                 </div>
                 <span className="text-[10px] font-bold text-[#15803d] bg-white px-2 py-0.5 rounded border border-[#86efac]">
-                  उ.प्र. पोस्टल
+                  {lang === "hi" ? "उ.प्र. पोस्टल" : "UP Postal"}
                 </span>
               </div>
             </div>
@@ -238,8 +246,12 @@ export default function FarmerDashboard() {
                 <Sprout className="size-6" />
               </div>
               <div>
-                <span className="text-xs text-[#6b7280] font-semibold">पंजीकृत फसलें</span>
-                <p className="text-xl font-black text-[#14532d]">{myCrops.length} फसलें</p>
+                <span className="text-xs text-[#6b7280] font-semibold">
+                  {lang === "hi" ? "पंजीकृत फसलें" : "Registered Crops"}
+                </span>
+                <p className="text-xl font-black text-[#14532d]">
+                  {myCrops.length} {lang === "hi" ? "फसलें" : "Crops"}
+                </p>
               </div>
             </div>
 
@@ -248,8 +260,12 @@ export default function FarmerDashboard() {
                 <HelpCircle className="size-6" />
               </div>
               <div>
-                <span className="text-xs text-[#6b7280] font-semibold">वैज्ञानिक परामर्श</span>
-                <p className="text-xl font-black text-[#0369a1]">{myConsultations.length} सक्रिय</p>
+                <span className="text-xs text-[#6b7280] font-semibold">
+                  {lang === "hi" ? "वैज्ञानिक परामर्श" : "Scientific Advisory"}
+                </span>
+                <p className="text-xl font-black text-[#0369a1]">
+                  {myConsultations.length} {lang === "hi" ? "सक्रिय" : "Active"}
+                </p>
               </div>
             </div>
 
@@ -258,8 +274,12 @@ export default function FarmerDashboard() {
                 <TrendingUp className="size-6" />
               </div>
               <div>
-                <span className="text-xs text-[#6b7280] font-semibold">आज का मंडी भाव</span>
-                <p className="text-xl font-black text-[#92400e]">₹2,475/कुंतल</p>
+                <span className="text-xs text-[#6b7280] font-semibold">
+                  {lang === "hi" ? "आज का मंडी भाव" : "Today Mandi Rate"}
+                </span>
+                <p className="text-xl font-black text-[#92400e]">
+                  ₹2,475/{lang === "hi" ? "कुंतल" : "Quintal"}
+                </p>
               </div>
             </div>
           </div>
@@ -269,7 +289,7 @@ export default function FarmerDashboard() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-bold text-base text-[#14532d] flex items-center gap-2">
                 <Sprout className="size-5 text-[#15803d]" />
-                <span>{lang === "hi" ? "मेरी पंजीकृत फसलें (Active Crops)" : "My Crops"}</span>
+                <span>{lang === "hi" ? "मेरी पंजीकृत फसलें" : "My Crops"}</span>
               </h3>
               <Link href="/crops">
                 <Button variant="outline" size="sm">

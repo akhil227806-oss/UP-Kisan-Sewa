@@ -49,19 +49,19 @@ export default function CropsPage() {
 
   const seasons = [
     { id: "all", label_hi: "सभी मौसम", label_en: "All Seasons" },
-    { id: "kharif", label_hi: "खरीफ (Kharif)", label_en: "Kharif" },
-    { id: "rabi", label_hi: "रबी (Rabi)", label_en: "Rabi" },
-    { id: "zaid", label_hi: "जायद (Zaid)", label_en: "Zaid" },
+    { id: "kharif", label_hi: "खरीफ", label_en: "Kharif" },
+    { id: "rabi", label_hi: "रबी", label_en: "Rabi" },
+    { id: "zaid", label_hi: "जायद", label_en: "Zaid" },
   ];
 
   const categories = [
     { id: "all", label_hi: "सभी श्रेणियां", label_en: "All Categories" },
-    { id: "cereal", label_hi: "अनाज (Cereals)", label_en: "Cereals" },
-    { id: "pulse", label_hi: "दलहन (Pulses)", label_en: "Pulses" },
-    { id: "oilseed", label_hi: "तिलहन (Oilseeds)", label_en: "Oilseeds" },
-    { id: "vegetable", label_hi: "सब्जियां (Vegetables)", label_en: "Vegetables" },
-    { id: "fruit", label_hi: "फल (Fruits)", label_en: "Fruits" },
-    { id: "commercial", label_hi: "व्यावसायिक (Commercial)", label_en: "Commercial" },
+    { id: "cereal", label_hi: "अनाज", label_en: "Cereals" },
+    { id: "pulse", label_hi: "दलहन", label_en: "Pulses" },
+    { id: "oilseed", label_hi: "तिलहन", label_en: "Oilseeds" },
+    { id: "vegetable", label_hi: "सब्जियां", label_en: "Vegetables" },
+    { id: "fruit", label_hi: "फल", label_en: "Fruits" },
+    { id: "commercial", label_hi: "व्यावसायिक", label_en: "Commercial" },
   ];
 
   const sampleCrops = [

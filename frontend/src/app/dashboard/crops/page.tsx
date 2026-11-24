@@ -136,25 +136,25 @@ export default function MyCropsDashboard() {
                   onChange={(e) => setCropName(e.target.value)}
                   className="w-full px-3 py-2 border rounded-lg text-sm bg-[#f8faf5]"
                 >
-                  <option value="गेहूँ (Wheat)">गेहूँ (Wheat)</option>
-                  <option value="धान (Paddy)">धान (Paddy)</option>
-                  <option value="सरसों (Mustard)">सरसों (Mustard)</option>
-                  <option value="अरहर (Pigeon Pea)">अरहर (Pigeon Pea)</option>
-                  <option value="गन्ना (Sugarcane)">गन्ना (Sugarcane)</option>
+                  <option value="गेहूँ (Wheat)">{lang === "hi" ? "गेहूँ" : "Wheat"}</option>
+                  <option value="धान (Paddy)">{lang === "hi" ? "धान" : "Paddy"}</option>
+                  <option value="सरसों (Mustard)">{lang === "hi" ? "सरसों" : "Mustard"}</option>
+                  <option value="अरहर (Pigeon Pea)">{lang === "hi" ? "अरहर" : "Pigeon Pea"}</option>
+                  <option value="गन्ना (Sugarcane)">{lang === "hi" ? "गन्ना" : "Sugarcane"}</option>
                 </select>
               </div>
               <div>
                 <label className="block text-xs font-bold text-[#14532d] mb-1">
-                  {lang === "hi" ? "सत्र (Season)" : "Season"}
+                  {lang === "hi" ? "सत्र" : "Season"}
                 </label>
                 <select
                   value={season}
                   onChange={(e) => setSeason(e.target.value)}
                   className="w-full px-3 py-2 border rounded-lg text-sm bg-[#f8faf5]"
                 >
-                  <option value="रबी 2025-26">रबी (Rabi 2025-26)</option>
-                  <option value="जायद 2026">जायद (Zaid 2026)</option>
-                  <option value="खरीफ 2026">खरीफ (Kharif 2026)</option>
+                  <option value="रबी 2025-26">{lang === "hi" ? "रबी 2025-26" : "Rabi 2025-26"}</option>
+                  <option value="जायद 2026">{lang === "hi" ? "जायद 2026" : "Zaid 2026"}</option>
+                  <option value="खरीफ 2026">{lang === "hi" ? "खरीफ 2026" : "Kharif 2026"}</option>
                 </select>
               </div>
               <div>

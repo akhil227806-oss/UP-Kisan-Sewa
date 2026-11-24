@@ -57,16 +57,24 @@ export default function SourcesPage() {
 
       <div className="my-6">
         <SectionHeader
-          title={lang === "hi" ? "डेटा स्रोत एवं सत्यापन नीति (Verification Policy)" : "Data Sources & Verification Policy"}
-          subtitle="पारदर्शिता, विश्वसनीयता एवं शून्य-भ्रम (Zero Fake Data) का संकल्प"
+          title={lang === "hi" ? "डेटा स्रोत एवं सत्यापन नीति" : "Data Sources & Verification Policy"}
+          subtitle={
+            lang === "hi"
+              ? "पारदर्शिता, विश्वसनीयता एवं शून्य-भ्रम का संकल्प"
+              : "Our Commitment to Transparency, Authenticity & Zero Fake Data"
+          }
         />
       </div>
 
       <div className="bg-white border border-[#e5e7eb] rounded-2xl p-6 sm:p-8 shadow-xs space-y-6 text-sm sm:text-base text-[#374151] leading-relaxed mb-8">
         <div>
-          <h3 className="font-bold text-[#14532d] text-lg mb-2">सत्यापन नीति के मूल सिद्धांत</h3>
+          <h3 className="font-bold text-[#14532d] text-lg mb-2">
+            {lang === "hi" ? "सत्यापन नीति के मूल सिद्धांत" : "Core Principles of Verification Policy"}
+          </h3>
           <p>
-            यू पी किसान सेवा का अटल नियम है कि कोई भी फर्जी, मनगढ़ंत या असत्यापित कीटनाशक डोज, मंडी भाव अथवा सरकारी योजना की जानकारी प्रकाशित नहीं की जाएगी। प्रत्येक सार्वजनिक पृष्ठ पर स्रोत संस्थान का नाम, आधिकारिक लिंक एवं अंतिम अद्यतन तिथि प्रदर्शित की जाती है।
+            {lang === "hi"
+              ? "यू पी किसान सेवा का अटल नियम है कि कोई भी फर्जी, मनगढ़ंत या असत्यापित कीटनाशक डोज, मंडी भाव अथवा सरकारी योजना की जानकारी प्रकाशित नहीं की जाएगी। प्रत्येक सार्वजनिक पृष्ठ पर स्रोत संस्थान का नाम, आधिकारिक लिंक एवं अंतिम अद्यतन तिथि प्रदर्शित की जाती है।"
+              : "Awadh Kisan Seva enforces strict data governance: no unverified, false, or speculative agrochemical doses, market rates, or government scheme guidelines are ever published. All pages cite verified institutional sources, links, and update timestamps."}
           </p>
         </div>
 
@@ -79,7 +87,10 @@ export default function SourcesPage() {
                   <span>{ds.sourceName}</span>
                 </h4>
                 <p className="text-xs text-[#4b5563] mt-1">{ds.purpose}</p>
-                <span className="text-[11px] text-[#6b7280] block mt-0.5">अद्यतन आवृत्ति: {ds.refresh}</span>
+                <span className="text-[11px] text-[#6b7280] block mt-0.5">
+                  {lang === "hi" ? "अद्यतन आवृत्ति: " : "Update Frequency: "}
+                  {ds.refresh}
+                </span>
               </div>
               <a
                 href={ds.url}
@@ -87,7 +98,7 @@ export default function SourcesPage() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs font-bold text-[#15803d] hover:underline shrink-0"
               >
-                <span>आधिकारिक वेबसाइट</span>
+                <span>{lang === "hi" ? "आधिकारिक वेबसाइट" : "Official Website"}</span>
                 <ExternalLink className="size-3.5" />
               </a>
             </div>

@@ -124,15 +124,16 @@ export default function AdminFarmersPage() {
       </div>
 
       <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-xs overflow-hidden">
-        <table className="w-full text-left border-collapse text-xs sm:text-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse text-xs sm:text-sm">
           <thead>
             <tr className="bg-[#14532d] text-white">
-              <th className="p-3.5">किसान का नाम</th>
-              <th className="p-3.5">मोबाइल व ईमेल</th>
-              <th className="p-3.5">जनपद / गाँव</th>
-              <th className="p-3.5">ईमेल सत्यापन</th>
-              <th className="p-3.5">खाता स्थिति</th>
-              <th className="p-3.5 text-center">कार्रवाई</th>
+              <th className="p-3.5">{lang === "hi" ? "किसान का नाम" : "Farmer Name"}</th>
+              <th className="p-3.5">{lang === "hi" ? "मोबाइल व ईमेल" : "Mobile & Email"}</th>
+              <th className="p-3.5">{lang === "hi" ? "जनपद / गाँव" : "District / Village"}</th>
+              <th className="p-3.5">{lang === "hi" ? "ईमेल सत्यापन" : "Email Verification"}</th>
+              <th className="p-3.5">{lang === "hi" ? "खाता स्थिति" : "Account Status"}</th>
+              <th className="p-3.5 text-center">{lang === "hi" ? "कार्रवाई" : "Action"}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#e5e7eb]">
@@ -152,9 +153,9 @@ export default function AdminFarmersPage() {
                 </td>
                 <td className="p-3.5">
                   {f.email_verified ? (
-                    <Badge variant="success" size="sm">सत्यापित</Badge>
+                    <Badge variant="success" size="sm">{lang === "hi" ? "सत्यापित" : "Verified"}</Badge>
                   ) : (
-                    <Badge variant="warning" size="sm">लंबित</Badge>
+                    <Badge variant="warning" size="sm">{lang === "hi" ? "लंबित" : "Pending"}</Badge>
                   )}
                 </td>
                 <td className="p-3.5">
@@ -172,7 +173,7 @@ export default function AdminFarmersPage() {
                         className="text-xs py-1 px-2.5"
                       >
                         <CheckCircle className="size-3.5" />
-                        <span>अनुमोदित करें</span>
+                        <span>{lang === "hi" ? "अनुमोदित करें" : "Approve"}</span>
                       </Button>
                     ) : (
                       <Button
@@ -182,7 +183,7 @@ export default function AdminFarmersPage() {
                         className="text-xs py-1 px-2.5"
                       >
                         <XCircle className="size-3.5" />
-                        <span>अस्वीकृत</span>
+                        <span>{lang === "hi" ? "अस्वीकृत" : "Reject"}</span>
                       </Button>
                     )}
                   </div>
@@ -190,10 +191,11 @@ export default function AdminFarmersPage() {
               </tr>
             ))}
           </tbody>
-        </table>
+          </table>
+        </div>
         {filtered.length === 0 && (
           <div className="p-8 text-center text-xs text-[#6b7280]">
-            कोई किसान रिकॉर्ड उपलब्ध नहीं है।
+            {lang === "hi" ? "कोई किसान रिकॉर्ड उपलब्ध नहीं है।" : "No farmer records found."}
           </div>
         )}
       </div>

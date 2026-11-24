@@ -225,23 +225,23 @@ export default function HomePage() {
                 : "Complete Digital Agriculture Support Platform for Farmers Across Uttar Pradesh. Verified crop guidance, pest alerts, live mandi prices, and government schemes covering all 75 districts."}
             </p>
 
-            <div className="flex flex-wrap gap-3 pt-2">
-              <Link href="/crops">
-                <Button variant="primary" size="lg" className="shadow-md">
+            <div className="flex flex-col sm:flex-row flex-wrap gap-2.5 sm:gap-3 pt-2">
+              <Link href="/crops" className="w-full sm:w-auto">
+                <Button variant="primary" size="lg" className="w-full sm:w-auto shadow-md justify-center">
                   <Sprout className="size-5" />
                   <span>{lang === "hi" ? "फसल जानकारी देखें" : "Explore Crops"}</span>
                 </Button>
               </Link>
 
-              <Link href="/ask-expert">
-                <Button variant="accent" size="lg" className="shadow-md text-[#14532d]">
+              <Link href="/ask-expert" className="w-full sm:w-auto">
+                <Button variant="accent" size="lg" className="w-full sm:w-auto shadow-md text-[#14532d] justify-center">
                   <HelpCircle className="size-5" />
                   <span>{lang === "hi" ? "विशेषज्ञ से सलाह लें" : "Consult Expert"}</span>
                 </Button>
               </Link>
 
-              <Link href="/mandi">
-                <Button variant="outline" size="lg" className="bg-white hover:bg-gray-50 shadow-md border-[#15803d] text-[#15803d] font-bold">
+              <Link href="/mandi" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white hover:bg-gray-50 shadow-md border-[#15803d] text-[#15803d] font-bold justify-center">
                   <TrendingUp className="size-5" />
                   <span>{lang === "hi" ? "आज के मंडी भाव" : "Mandi Prices"}</span>
                 </Button>

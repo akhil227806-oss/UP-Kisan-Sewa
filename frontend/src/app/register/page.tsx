@@ -98,6 +98,7 @@ function ComboboxSelect({
   loading,
   icon,
 }: ComboboxProps) {
+  const { lang } = useI18n();
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState(value);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -155,7 +156,7 @@ function ComboboxSelect({
           value={searchTerm}
           onChange={handleInputChange}
           onFocus={() => !disabled && setIsOpen(true)}
-          placeholder={loading ? "खोजा जा रहा है..." : placeholder || "चुनें अथवा टाइप करें"}
+          placeholder={loading ? (lang === "hi" ? "खोजा जा रहा है..." : "Loading...") : placeholder || (lang === "hi" ? "चुनें अथवा टाइप करें" : "Select or type")}
           className={`w-full py-2 border rounded-lg text-xs sm:text-sm outline-none transition-all ${icon ? "pl-9 pr-8" : "pl-3 pr-8"
             } ${disabled
               ? "bg-gray-100 border-gray-300 text-gray-400 cursor-not-allowed"
@@ -192,16 +193,18 @@ function ComboboxSelect({
         <div className="absolute z-50 left-0 right-0 mt-1 max-h-56 overflow-y-auto bg-white border border-[#d1d5db] rounded-xl shadow-xl py-1 text-xs sm:text-sm">
           {loading && (
             <div className="p-3 text-center text-[#6b7280] text-xs animate-pulse">
-              विकल्प लोड हो रहे हैं...
+              {lang === "hi" ? "विकल्प लोड हो रहे हैं..." : "Loading options..."}
             </div>
           )}
 
           {!loading && filtered.length > 0 && (
             <>
               {filtered.map((opt, idx) => {
-                const optText = typeof opt === "string" ? opt : opt.name_hi;
-                const subText = typeof opt !== "string" && opt.name_en ? ` (${opt.name_en})` : "";
-                const isSelected = optText === value;
+                const optText = typeof opt === "string" ? opt : (lang === "hi" ? opt.name_hi : (opt.name_en || opt.name_hi));
+                const subText = typeof opt !== "string" && opt.name_en && opt.name_hi
+                  ? (lang === "hi" ? ` (${opt.name_en})` : ` (${opt.name_hi})`)
+                  : "";
+                const isSelected = optText === value || (typeof opt !== "string" && (opt.name_hi === value || opt.name_en === value));
                 return (
                   <button
                     key={idx}
@@ -230,14 +233,18 @@ function ComboboxSelect({
                 className="w-full text-left px-2 py-1.5 rounded-lg bg-[#dcfce7] hover:bg-[#bbf7d0] text-[#14532d] text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5"
               >
                 <Sparkles className="size-3 text-[#15803d]" />
-                <span>सूची में नहीं है? &quot;{searchTerm.trim()}&quot; का उपयोग करें</span>
+                <span>
+                  {lang === "hi"
+                    ? `सूची में नहीं है? "${searchTerm.trim()}" का उपयोग करें`
+                    : `Not in list? Use "${searchTerm.trim()}"`}
+                </span>
               </button>
             </div>
           )}
 
           {!loading && filtered.length === 0 && !searchTerm.trim() && (
             <div className="p-3 text-center text-[#6b7280] text-xs">
-              कोई विकल्प उपलब्ध नहीं है
+              {lang === "hi" ? "कोई विकल्प उपलब्ध नहीं है" : "No options available"}
             </div>
           )}
         </div>
@@ -766,7 +773,9 @@ export default function RegisterPage() {
             <ShieldCheck className="size-9 text-[#15803d]" />
           </div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#15803d] bg-[#dcfce7] px-3 py-1 rounded-full border border-[#86efac]">
-            अवध किसान सेवा • आधिकारिक डिजिटल पंजीकरण
+            {lang === "hi"
+              ? "अवध किसान सेवा • आधिकारिक डिजिटल पंजीकरण"
+              : "Awadh Kisan Seva • Official Digital Registration"}
           </span>
           <h1 className="text-2xl sm:text-3xl font-black text-[#14532d] mt-2">
             {lang === "hi" ? "किसान नया पंजीकरण" : "New Farmer Registration"}
@@ -816,7 +825,7 @@ export default function RegisterPage() {
             </p>
             <div className="pt-4">
               <Button onClick={() => router.push("/dashboard")} variant="primary" size="lg">
-                <span>किसान डैशबोर्ड पर जाएँ</span>
+                <span>{lang === "hi" ? "किसान डैशबोर्ड पर जाएँ" : "Go to Farmer Dashboard"}</span>
                 <ArrowRight className="size-4" />
               </Button>
             </div>
@@ -832,10 +841,14 @@ export default function RegisterPage() {
                   </div>
                   <div>
                     <h3 className="font-bold text-sm sm:text-base text-[#14532d]">
-                      ईमेल पता एवं अनिवार्य OTP सत्यापन (Email Verification)
+                      {lang === "hi"
+                        ? "ईमेल पता एवं अनिवार्य OTP सत्यापन"
+                        : "Email Address & Mandatory OTP Verification"}
                     </h3>
                     <p className="text-[11px] text-[#6b7280]">
-                      पंजीकरण से पूर्व ईमेल पर 6-अंकीय OTP भेजकर सत्यापित करना अनिवार्य है
+                      {lang === "hi"
+                        ? "पंजीकरण से पूर्व ईमेल पर 6-अंकीय OTP भेजकर सत्यापित करना अनिवार्य है"
+                        : "Mandatory verification via 6-digit OTP sent to your email before registration"}
                     </p>
                   </div>
                 </div>
@@ -843,7 +856,7 @@ export default function RegisterPage() {
                 {isEmailVerified && (
                   <span className="inline-flex items-center gap-1 bg-[#dcfce7] text-[#15803d] text-xs font-bold px-3 py-1 rounded-full border border-[#86efac]">
                     <CheckCircle2 className="size-3.5" />
-                    ईमेल सत्यापित (Verified)
+                    {lang === "hi" ? "ईमेल सत्यापित" : "Email Verified"}
                   </span>
                 )}
               </div>
@@ -852,7 +865,7 @@ export default function RegisterPage() {
               <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-end">
                 <div className="flex-1 w-full">
                   <label className="block text-xs font-bold text-[#14532d] mb-1">
-                    ईमेल पता (Email Address) *
+                    {lang === "hi" ? "ईमेल पता *" : "Email Address *"}
                   </label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-2.5 size-4 text-[#9ca3af]" />
@@ -885,12 +898,12 @@ export default function RegisterPage() {
                     )}
                     <span>
                       {sendingOtp
-                        ? "OTP भेजा जा रहा है..."
+                        ? (lang === "hi" ? "OTP भेजा जा रहा है..." : "Sending OTP...")
                         : resendCooldown > 0
-                          ? `पुनः भेजें (${resendCooldown}s)`
+                          ? (lang === "hi" ? `पुनः भेजें (${resendCooldown}s)` : `Resend (${resendCooldown}s)`)
                           : otpSent
-                            ? "पुनः OTP भेजें"
-                            : "Verify Email (OTP भेजें)"}
+                            ? (lang === "hi" ? "पुनः OTP भेजें" : "Resend OTP")
+                            : (lang === "hi" ? "OTP भेजें" : "Verify Email (Send OTP)")}
                     </span>
                   </button>
                 )}
@@ -901,10 +914,14 @@ export default function RegisterPage() {
                 <div className="pt-3 border-t border-[#e5e7eb] space-y-3">
                   <div className="text-center sm:text-left">
                     <label className="block text-xs font-bold text-[#14532d] mb-1">
-                      ईमेल पर प्राप्त 6-अंकीय OTP कोड यहाँ दर्ज करें *
+                      {lang === "hi"
+                        ? "ईमेल पर प्राप्त 6-अंकीय OTP कोड यहाँ दर्ज करें *"
+                        : "Enter 6-digit OTP code received on email *"}
                     </label>
                     <p className="text-[11px] text-[#6b7280]">
-                      6 अंकों का कोड दर्ज करें अथवा सीधे पेस्ट (Paste) करें
+                      {lang === "hi"
+                        ? "6 अंकों का कोड दर्ज करें अथवा सीधे पेस्ट करें"
+                        : "Enter 6-digit code or paste directly"}
                     </p>
                   </div>
 
@@ -934,7 +951,9 @@ export default function RegisterPage() {
                       size="md"
                       className="ml-2 shadow-xs"
                     >
-                      {verifyingOtp ? "सत्यापित हो रहा है..." : "OTP सत्यापित करें"}
+                      {verifyingOtp
+                        ? (lang === "hi" ? "सत्यापित हो रहा है..." : "Verifying...")
+                        : (lang === "hi" ? "OTP सत्यापित करें" : "Verify OTP")}
                     </Button>
                   </div>
                 </div>
@@ -954,9 +973,13 @@ export default function RegisterPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-sm sm:text-base text-[#14532d]">
-                        व्यक्तिगत विवरण एवं पासवर्ड (Personal Details)
+                        {lang === "hi" ? "व्यक्तिगत विवरण एवं पासवर्ड" : "Personal Details & Password"}
                       </h3>
-                      <p className="text-[11px] text-[#6b7280]">अपना पूरा नाम, मोबाइल नंबर एवं सुरक्षित पासवर्ड बनाएं</p>
+                      <p className="text-[11px] text-[#6b7280]">
+                        {lang === "hi"
+                          ? "अपना पूरा नाम, मोबाइल नंबर एवं सुरक्षित पासवर्ड बनाएं"
+                          : "Enter your full name, mobile number, and secure password"}
+                      </p>
                     </div>
                   </div>
 
@@ -968,7 +991,11 @@ export default function RegisterPage() {
                     className="inline-flex items-center gap-1.5 bg-[#dcfce7] border border-[#86efac] text-[#14532d] hover:bg-[#bbf7d0] px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer shadow-xs"
                   >
                     <Navigation className={`size-3.5 ${geoLoading ? "animate-spin text-[#15803d]" : "text-[#15803d]"}`} />
-                    <span>{geoLoading ? "GPS खोज रहा है..." : "📍 GPS से पता भरें"}</span>
+                    <span>
+                      {geoLoading
+                        ? (lang === "hi" ? "GPS खोज रहा है..." : "Locating GPS...")
+                        : (lang === "hi" ? "📍 GPS से पता भरें" : "📍 Auto-fill Address with GPS")}
+                    </span>
                   </button>
                 </div>
 
@@ -976,7 +1003,7 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-xs font-bold text-[#14532d] mb-1">
-                      पूरा नाम (Full Name) *
+                      {lang === "hi" ? "पूरा नाम *" : "Full Name *"}
                     </label>
                     <div className="relative">
                       <User className="absolute left-3 top-2.5 size-4 text-[#9ca3af]" />
@@ -986,7 +1013,7 @@ export default function RegisterPage() {
                         disabled={!isEmailVerified}
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        placeholder="उदा. रामेश्वर प्रताप सिंह"
+                        placeholder={lang === "hi" ? "उदा. रामेश्वर प्रताप सिंह" : "e.g. Rameshwar Pratap Singh"}
                         className="w-full pl-9 pr-3 py-2 border border-[#d1d5db] rounded-lg text-xs sm:text-sm outline-none focus:border-[#15803d]"
                       />
                     </div>
@@ -994,7 +1021,7 @@ export default function RegisterPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-[#14532d] mb-1">
-                      10-अंकीय मोबाइल नंबर (Mobile Number) *
+                      {lang === "hi" ? "10-अंकीय मोबाइल नंबर *" : "10-Digit Mobile Number *"}
                     </label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-2.5 size-4 text-[#9ca3af]" />
@@ -1006,7 +1033,7 @@ export default function RegisterPage() {
                         maxLength={10}
                         value={phone}
                         onChange={(e) => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                        placeholder="उदा. 9876543210"
+                        placeholder={lang === "hi" ? "उदा. 9876543210" : "e.g. 9876543210"}
                         className="w-full pl-9 pr-3 py-2 border border-[#d1d5db] rounded-lg text-xs sm:text-sm outline-none focus:border-[#15803d] font-mono"
                       />
                     </div>
@@ -1017,7 +1044,7 @@ export default function RegisterPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                   <div>
                     <label className="block text-xs font-bold text-[#14532d] mb-1">
-                      सुरक्षित पासवर्ड (Password) *
+                      {lang === "hi" ? "सुरक्षित पासवर्ड *" : "Password *"}
                     </label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-2.5 size-4 text-[#9ca3af]" />
@@ -1028,7 +1055,7 @@ export default function RegisterPage() {
                         disabled={!isEmailVerified}
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        placeholder="कम से कम 6 अक्षर"
+                        placeholder={lang === "hi" ? "कम से कम 6 अक्षर" : "Minimum 6 characters"}
                         className="w-full pl-9 pr-9 py-2 border border-[#d1d5db] rounded-lg text-xs sm:text-sm outline-none focus:border-[#15803d]"
                       />
                       <button
@@ -1043,7 +1070,7 @@ export default function RegisterPage() {
 
                   <div>
                     <label className="block text-xs font-bold text-[#14532d] mb-1">
-                      पासवर्ड की पुष्टि करें (Confirm Password) *
+                      {lang === "hi" ? "पासवर्ड की पुष्टि करें *" : "Confirm Password *"}
                     </label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-2.5 size-4 text-[#9ca3af]" />
@@ -1054,7 +1081,7 @@ export default function RegisterPage() {
                         disabled={!isEmailVerified}
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="पासवर्ड पुनः दर्ज करें"
+                        placeholder={lang === "hi" ? "पासवर्ड पुनः दर्ज करें" : "Re-enter password"}
                         className="w-full pl-9 pr-9 py-2 border border-[#d1d5db] rounded-lg text-xs sm:text-sm outline-none focus:border-[#15803d]"
                       />
                       <button
@@ -1066,7 +1093,9 @@ export default function RegisterPage() {
                       </button>
                     </div>
                     {confirmPassword && password !== confirmPassword && (
-                      <p className="text-[10px] text-red-600 mt-1">पासवर्ड मेल नहीं खा रहे हैं</p>
+                      <p className="text-[10px] text-red-600 mt-1">
+                        {lang === "hi" ? "पासवर्ड मेल नहीं खा रहे हैं" : "Passwords do not match"}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -1076,7 +1105,7 @@ export default function RegisterPage() {
                   <div className="flex items-center gap-2 pb-2 border-b border-[#e5e7eb]">
                     <Compass className="size-4 text-[#15803d]" />
                     <h4 className="font-bold text-xs sm:text-sm text-[#14532d] uppercase tracking-wider">
-                      भौगोलिक एवं प्रशासनिक पता (Dropdown + Manual Typing)
+                      {lang === "hi" ? "भौगोलिक एवं प्रशासनिक पता" : "Geographic & Administrative Address"}
                     </h4>
                   </div>
 
@@ -1084,22 +1113,22 @@ export default function RegisterPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-[#14532d] mb-1">
-                        राज्य (State)
+                        {lang === "hi" ? "राज्य" : "State"}
                       </label>
                       <input
                         type="text"
                         disabled
-                        value="उत्तर प्रदेश (Uttar Pradesh)"
+                        value={lang === "hi" ? "उत्तर प्रदेश" : "Uttar Pradesh"}
                         className="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-xs sm:text-sm text-gray-700 font-semibold cursor-not-allowed"
                       />
                     </div>
 
                     <ComboboxSelect
-                      label="मण्डल (Division)"
+                      label={lang === "hi" ? "मण्डल" : "Division"}
                       value={selectedDivision}
                       onChange={handleDivisionChange}
                       options={divisions}
-                      placeholder="मण्डल चुनें अथवा टाइप करें"
+                      placeholder={lang === "hi" ? "मण्डल चुनें अथवा टाइप करें" : "Select or type division"}
                       loading={loadingDivs}
                       disabled={!isEmailVerified}
                       icon={<Building2 className="size-4" />}
@@ -1109,11 +1138,11 @@ export default function RegisterPage() {
                   {/* Row 2: District & Tehsil */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <ComboboxSelect
-                      label="जनपद (District)"
+                      label={lang === "hi" ? "जनपद" : "District"}
                       value={selectedDistrict}
                       onChange={handleDistrictChange}
                       options={districts}
-                      placeholder="जनपद चुनें अथवा लिखें (उदा. अयोध्या)"
+                      placeholder={lang === "hi" ? "जनपद चुनें अथवा लिखें (उदा. अयोध्या)" : "Select or type district (e.g. Ayodhya)"}
                       required
                       loading={loadingDists}
                       disabled={!isEmailVerified}
@@ -1121,11 +1150,11 @@ export default function RegisterPage() {
                     />
 
                     <ComboboxSelect
-                      label="तहसील (Tehsil)"
+                      label={lang === "hi" ? "तहसील" : "Tehsil"}
                       value={selectedTehsil}
                       onChange={handleTehsilChange}
                       options={tehsils}
-                      placeholder="तहसील चुनें अथवा टाइप करें"
+                      placeholder={lang === "hi" ? "तहसील चुनें अथवा टाइप करें" : "Select or type tehsil"}
                       required
                       loading={loadingTehsils}
                       disabled={!isEmailVerified || !selectedDistrict}
@@ -1135,22 +1164,22 @@ export default function RegisterPage() {
                   {/* Row 3: Block & Village */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <ComboboxSelect
-                      label="विकास खंड (Block)"
+                      label={lang === "hi" ? "विकास खंड" : "Block"}
                       value={selectedBlock}
                       onChange={handleBlockChange}
                       options={blocks}
-                      placeholder="विकास खंड चुनें अथवा लिखें"
+                      placeholder={lang === "hi" ? "विकास खंड चुनें अथवा लिखें" : "Select or type block"}
                       required
                       loading={loadingBlocks}
                       disabled={!isEmailVerified || !selectedTehsil}
                     />
 
                     <ComboboxSelect
-                      label="ग्राम / वार्ड (Village / Ward)"
+                      label={lang === "hi" ? "ग्राम / वार्ड" : "Village / Ward"}
                       value={selectedVillage}
                       onChange={setSelectedVillage}
                       options={villages}
-                      placeholder="ग्राम का नाम चुनें अथवा लिखें"
+                      placeholder={lang === "hi" ? "ग्राम का नाम चुनें अथवा लिखें" : "Select or type village"}
                       required
                       loading={loadingVillages}
                       disabled={!isEmailVerified || !selectedBlock}
@@ -1161,7 +1190,7 @@ export default function RegisterPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-bold text-[#14532d] mb-1">
-                        6-अंकीय पिन कोड (PIN Code) *
+                        {lang === "hi" ? "6-अंकीय पिन कोड *" : "6-Digit PIN Code *"}
                       </label>
                       <div className="relative">
                         <MapPin className="absolute left-3 top-2.5 size-4 text-[#9ca3af]" />
@@ -1172,23 +1201,23 @@ export default function RegisterPage() {
                           disabled={!isEmailVerified}
                           value={pincode}
                           onChange={(e) => handlePincodeChange(e.target.value)}
-                          placeholder="उदा. 224001, 224188, 224229"
+                          placeholder={lang === "hi" ? "उदा. 224001, 224188" : "e.g. 224001, 224188"}
                           className="w-full pl-9 pr-3 py-2 border border-[#d1d5db] rounded-lg text-xs sm:text-sm outline-none focus:border-[#15803d] font-mono font-bold"
                         />
                       </div>
                       {loadingPin && (
                         <span className="text-[10px] text-[#15803d] font-semibold animate-pulse block mt-0.5">
-                          डाकघर व ब्लॉक खोजा जा रहा है...
+                          {lang === "hi" ? "डाकघर व ब्लॉक खोजा जा रहा है..." : "Fetching post office and block details..."}
                         </span>
                       )}
                     </div>
 
                     <ComboboxSelect
-                      label="डाकघर (Post Office)"
+                      label={lang === "hi" ? "डाकघर" : "Post Office"}
                       value={selectedPostOffice}
                       onChange={setSelectedPostOffice}
                       options={postOffices}
-                      placeholder="डाकघर चुनें अथवा लिखें"
+                      placeholder={lang === "hi" ? "डाकघर चुनें अथवा लिखें" : "Select or type post office"}
                       required
                       disabled={!isEmailVerified}
                     />
@@ -1207,8 +1236,8 @@ export default function RegisterPage() {
                   >
                     <span>
                       {submitting
-                        ? "पंजीकरण भेजा जा रहा है..."
-                        : "किसान पंजीकरण पूर्ण करें (Complete Registration)"}
+                        ? (lang === "hi" ? "पंजीकरण भेजा जा रहा है..." : "Submitting Registration...")
+                        : (lang === "hi" ? "किसान पंजीकरण पूर्ण करें" : "Complete Registration")}
                     </span>
                     <ArrowRight className="size-5" />
                   </Button>
@@ -1218,9 +1247,9 @@ export default function RegisterPage() {
 
             {/* Bottom Links */}
             <div className="text-center pt-4 border-t border-[#f3f4f6] text-xs text-[#6b7280]">
-              पहले से पंजीकृत हैं?{" "}
+              {lang === "hi" ? "पहले से पंजीकृत हैं? " : "Already registered? "}
               <Link href="/login" className="text-[#15803d] font-bold hover:underline">
-                यहाँ लॉगिन करें (Sign In)
+                {lang === "hi" ? "यहाँ लॉगिन करें" : "Sign In here"}
               </Link>
             </div>
           </div>

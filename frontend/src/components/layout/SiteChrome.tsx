@@ -176,7 +176,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
               className="inline-flex items-center gap-1.5 text-white/95 hover:text-[#fef08a] transition-colors"
             >
               <Phone className="size-3.5" />
-              <span>1800-180-1551 (टोल-फ्री)</span>
+              <span>1800-180-1551 ({lang === "hi" ? "टोल-फ्री" : "Toll-Free"})</span>
             </a>
 
             {/* Font size controller */}
@@ -257,10 +257,9 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
         <div className="max-w-7xl mx-auto px-3 sm:px-6 py-2.5">
           <div className="flex items-center justify-between gap-3 sm:gap-6">
             {/* Logo and Platform Name */}
-            <Link href="/" className="flex items-center gap-3 no-underline group shrink-0">
+            <Link href="/" className="flex items-center gap-2 sm:gap-3 no-underline group min-w-0">
               <div
-                className="relative rounded-full overflow-hidden border-2 border-[#15803d] shadow-xs group-hover:scale-105 transition-transform bg-white flex items-center justify-center p-0.5 shrink-0"
-                style={{ width: "56px", height: "56px", minWidth: "56px", minHeight: "56px" }}
+                className="relative rounded-full overflow-hidden border-2 border-[#15803d] shadow-xs group-hover:scale-105 transition-transform bg-white flex items-center justify-center p-0.5 shrink-0 size-11 sm:size-14"
               >
                 <img
                   src="/logo/awadh-kisan-seva.png"
@@ -268,19 +267,19 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-black text-[#14532d] tracking-tight">
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <h1 className="text-base sm:text-2xl font-black text-[#14532d] tracking-tight truncate">
                     {t("meta.siteName")}
                   </h1>
-                  <span className="text-[10px] font-bold bg-[#dcfce7] text-[#14532d] px-2 py-0.5 rounded-full border border-[#86efac]">
-                    उ.प्र.
+                  <span className="text-[10px] font-bold bg-[#dcfce7] text-[#14532d] px-1.5 sm:px-2 py-0.5 rounded-full border border-[#86efac] shrink-0">
+                    {lang === "hi" ? "उ.प्र." : "UP"}
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm font-semibold text-[#15803d]">
+                <p className="text-[11px] sm:text-sm font-semibold text-[#15803d] truncate">
                   {t("meta.tagline")}
                 </p>
-                <p className="text-[11px] text-[#6b7280]">
+                <p className="text-[10px] sm:text-[11px] text-[#6b7280] hidden sm:block truncate">
                   {lang === "hi" ? "समग्र डिजिटल कृषि संदर्शिका एवं किसान सेवा" : "Digital Agriculture & Farmer Support"}
                 </p>
               </div>
@@ -392,12 +391,12 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   <Link
                     href="/login"
-                    className="inline-flex items-center gap-1.5 border border-[#15803d] text-[#15803d] hover:bg-[#dcfce7] font-bold text-xs sm:text-sm px-3 py-2 rounded-lg transition-colors"
+                    className="inline-flex items-center gap-1 border border-[#15803d] text-[#15803d] hover:bg-[#dcfce7] font-bold text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg transition-colors"
                   >
-                    <User className="size-4" />
+                    <User className="size-3.5 sm:size-4" />
                     <span>{t("nav.login")}</span>
                   </Link>
                   <Link
@@ -691,9 +690,9 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="mt-6 pt-4 border-t border-[#e5e7eb] text-xs text-[#6b7280]">
-              <p className="font-semibold text-[#14532d] mb-1">किसान कॉल सेंटर</p>
+              <p className="font-semibold text-[#14532d] mb-1">{lang === "hi" ? "किसान कॉल सेंटर" : "Kisan Call Centre"}</p>
               <a href="tel:18001801551" className="text-[#0284c7] font-bold block mb-3">
-                1800-180-1551 (टोल-फ्री)
+                1800-180-1551 ({lang === "hi" ? "टोल-फ्री" : "Toll-Free"})
               </a>
             </div>
           </div>
@@ -701,61 +700,61 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main Content Container */}
-      <main id="main-content" className="flex-1 pb-16 sm:pb-0">
+      <main id="main-content" className="flex-1 pb-20 lg:pb-0">
         {children}
       </main>
 
       {/* Mobile Bottom Navigation Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e5e7eb] shadow-lg flex items-center justify-around py-2 px-1">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-[#e5e7eb] shadow-lg flex items-center justify-around py-1.5 px-1 pb-[calc(0.5rem+env(safe-area-inset-bottom,0px))]">
         <Link
           href="/"
           className={clsx(
-            "flex flex-col items-center text-[10px] font-semibold",
+            "flex flex-col items-center text-[10px] font-semibold min-w-[56px] py-1",
             pathname === "/" ? "text-[#15803d]" : "text-[#6b7280]"
           )}
         >
           <img src="/logo/awadh-kisan-seva.png" alt="" className="size-5 object-contain" />
-          <span>{t("nav.home")}</span>
+          <span className="mt-0.5">{t("nav.home")}</span>
         </Link>
         <Link
           href="/crops"
           className={clsx(
-            "flex flex-col items-center text-[10px] font-semibold",
+            "flex flex-col items-center text-[10px] font-semibold min-w-[56px] py-1",
             pathname === "/crops" ? "text-[#15803d]" : "text-[#6b7280]"
           )}
         >
           <BookOpen className="size-5" />
-          <span>{t("crops")}</span>
+          <span className="mt-0.5">{t("nav.crops")}</span>
         </Link>
         <Link
           href="/mandi"
           className={clsx(
-            "flex flex-col items-center text-[10px] font-semibold",
+            "flex flex-col items-center text-[10px] font-semibold min-w-[56px] py-1",
             pathname === "/mandi" ? "text-[#15803d]" : "text-[#6b7280]"
           )}
         >
           <TrendingUp className="size-5" />
-          <span>{t("mandi")}</span>
+          <span className="mt-0.5">{t("nav.mandi")}</span>
         </Link>
         <Link
           href="/weather"
           className={clsx(
-            "flex flex-col items-center text-[10px] font-semibold",
+            "flex flex-col items-center text-[10px] font-semibold min-w-[56px] py-1",
             pathname === "/weather" ? "text-[#15803d]" : "text-[#6b7280]"
           )}
         >
           <CloudSun className="size-5" />
-          <span>{t("weather")}</span>
+          <span className="mt-0.5">{t("nav.weather")}</span>
         </Link>
         <Link
           href="/ask-expert"
           className={clsx(
-            "flex flex-col items-center text-[10px] font-semibold",
+            "flex flex-col items-center text-[10px] font-semibold min-w-[56px] py-1",
             pathname === "/ask-expert" ? "text-[#15803d]" : "text-[#6b7280]"
           )}
         >
           <HelpCircle className="size-5" />
-          <span>{t("askExpert")}</span>
+          <span className="mt-0.5">{t("nav.askExpert")}</span>
         </Link>
       </div>
 
@@ -763,32 +762,32 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
       <footer className="bg-[#14532d] text-white pt-12 pb-8 border-t-4 border-[#eab308]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Top Brand Partnership Strip: Both Logos Side-by-Side */}
-          <div className="bg-white/10 border border-white/15 rounded-2xl p-5 mb-10 flex flex-wrap items-center justify-between gap-6 backdrop-blur-xs">
-            <div className="flex items-center gap-4">
-              <div className="size-16 sm:size-20 rounded-full bg-white p-1 shadow-md shrink-0 flex items-center justify-center">
+          <div className="bg-white/10 border border-white/15 rounded-2xl p-4 sm:p-5 mb-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6 backdrop-blur-xs">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="size-14 sm:size-20 rounded-full bg-white p-1 shadow-md shrink-0 flex items-center justify-center">
                 <img
                   src="/logo/awadh-kisan-seva.png"
                   alt="अवध किसान सेवा"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div className="h-12 w-px bg-white/20 hidden sm:block" />
-              <div className="size-16 sm:size-20 rounded-xl bg-white p-1.5 shadow-md shrink-0 flex items-center justify-center">
+              <div className="h-10 sm:h-12 w-px bg-white/20" />
+              <div className="size-14 sm:size-20 rounded-xl bg-white p-1.5 shadow-md shrink-0 flex items-center justify-center">
                 <img
                   src="/logo/anduat.png"
                   alt="NDUAT Ayodhya"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div>
-                <span className="text-xs uppercase tracking-wider text-[#eab308] font-bold block">
-                  आधिकारिक कृषि संदर्शिका एवं सहायता मंच
+              <div className="min-w-0">
+                <span className="text-[11px] sm:text-xs uppercase tracking-wider text-[#eab308] font-bold block">
+                  {lang === "hi" ? "आधिकारिक कृषि संदर्शिका एवं सहायता मंच" : "Official Agricultural Guide & Support Platform"}
                 </span>
-                <h3 className="text-lg sm:text-xl font-black text-white">
-                  अवध किसान सेवा (Awadh Kisan Seva)
+                <h3 className="text-base sm:text-xl font-black text-white truncate">
+                  {lang === "hi" ? "अवध किसान सेवा" : "Awadh Kisan Seva"}
                 </h3>
-                <p className="text-xs text-[#86efac]">
-                  आचार्य नरेंद्र देव कृषि एवं प्रौद्योगिकी विश्वविद्यालय (NDUAT), अयोध्या सहयोग
+                <p className="text-[11px] sm:text-xs text-[#86efac]">
+                  {lang === "hi" ? "आचार्य नरेंद्र देव कृषि एवं प्रौद्योगिकी विश्वविद्यालय (NDUAT), अयोध्या सहयोग" : "In Academic Collaboration with NDUAT, Ayodhya"}
                 </p>
               </div>
             </div>
@@ -802,7 +801,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                 className="inline-flex items-center gap-1.5 bg-white text-[#14532d] hover:bg-[#dcfce7] font-bold text-xs sm:text-sm px-4 py-2 rounded-lg shadow-sm transition-all"
               >
                 <GraduationCap className="size-4 text-[#15803d]" />
-                <span>NDUAT आधिकारिक वेबसाइट</span>
+                <span>{lang === "hi" ? "NDUAT आधिकारिक वेबसाइट" : "NDUAT Official Website"}</span>
                 <ExternalLink className="size-3.5" />
               </a>
               <a
@@ -811,7 +810,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 bg-[#eab308] text-[#1f2937] hover:bg-[#ca8a04] font-bold text-xs sm:text-sm px-4 py-2 rounded-lg shadow-sm transition-all"
               >
-                <span>MCAET कॉलेज पोर्टल</span>
+                <span>{lang === "hi" ? "MCAET कॉलेज पोर्टल" : "MCAET College Portal"}</span>
                 <ExternalLink className="size-3.5" />
               </a>
             </div>
@@ -822,14 +821,14 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
             <div>
               <h4 className="text-sm font-bold uppercase tracking-wider text-[#eab308] mb-3 flex items-center gap-1.5">
                 <span className="w-2 h-2 bg-[#eab308] rounded-full inline-block" />
-                मंच के बारे में
+                {lang === "hi" ? "मंच के बारे में" : "About Platform"}
               </h4>
               <p className="text-xs sm:text-sm text-white/80 leading-relaxed mb-4">
                 {t("footer.aboutDesc")}
               </p>
               <div className="p-3 bg-white/10 rounded-lg text-xs border border-white/10 space-y-1">
-                <p className="font-bold text-[#fef08a]">तकनीकी विकास एवं समन्वय:</p>
-                <p className="text-white/80">महामाया कृषि अभियांत्रिकी एवं प्रौद्योगिकी महाविद्यालय (MCAET), NDUAT</p>
+                <p className="font-bold text-[#fef08a]">{lang === "hi" ? "तकनीकी विकास एवं समन्वय:" : "Technical Coordination:"}</p>
+                <p className="text-white/80">{lang === "hi" ? "महामाया कृषि अभियांत्रिकी एवं प्रौद्योगिकी महाविद्यालय (MCAET), NDUAT" : "Mahamaya College of Agricultural Engineering & Technology (MCAET), NDUAT"}</p>
               </div>
             </div>
 
@@ -842,42 +841,42 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
               <ul className="space-y-2 text-xs sm:text-sm text-white/85">
                 <li>
                   <Link href="/crops" className="hover:text-[#fef08a] transition-colors">
-                    {t("crops")}
+                    {t("nav.crops")}
                   </Link>
                 </li>
                 <li>
                   <Link href="/diseases" className="hover:text-[#fef08a] transition-colors">
-                    {t("diseases")}
+                    {t("nav.cropDiseases")}
                   </Link>
                 </li>
                 <li>
                   <Link href="/pests" className="hover:text-[#fef08a] transition-colors">
-                    {t("pests")}
+                    {t("nav.pestManagement")}
                   </Link>
                 </li>
                 <li>
                   <Link href="/mandi" className="hover:text-[#fef08a] transition-colors">
-                    {t("mandi")}
+                    {t("nav.mandi")}
                   </Link>
                 </li>
                 <li>
                   <Link href="/weather" className="hover:text-[#fef08a] transition-colors">
-                    {t("weather")}
+                    {t("nav.weather")}
                   </Link>
                 </li>
                 <li>
                   <Link href="/schemes" className="hover:text-[#fef08a] transition-colors">
-                    {t("schemes")}
+                    {t("nav.schemes")}
                   </Link>
                 </li>
                 <li>
                   <Link href="/crop-calendar" className="hover:text-[#fef08a] transition-colors">
-                    {t("cropCalendar")}
+                    {t("nav.cropCalendar")}
                   </Link>
                 </li>
                 <li>
                   <Link href="/soil-health" className="hover:text-[#fef08a] transition-colors">
-                    {t("soilHealth")}
+                    {t("nav.soilHealth")}
                   </Link>
                 </li>
               </ul>
@@ -887,7 +886,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
             <div>
               <h4 className="text-sm font-bold uppercase tracking-wider text-[#eab308] mb-3 flex items-center gap-1.5">
                 <span className="w-2 h-2 bg-[#eab308] rounded-full inline-block" />
-                संपर्क सूत्र (Contact Us)
+                {lang === "hi" ? "संपर्क सूत्र" : "Contact Us"}
               </h4>
               <div className="space-y-3 text-xs text-white/90">
                 {/* Project Lead */}
@@ -902,10 +901,14 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     </div>
                     <div>
                       <p className="font-extrabold text-[#fef08a] text-sm">Dr. Neeraj Kumar Singh</p>
-                      <p className="text-[11px] text-white/90 font-medium">Assistant Professor (Project Lead)</p>
+                      <p className="text-[11px] text-white/90 font-medium">
+                        {lang === "hi" ? "सह-प्राध्यापक (परियोजना प्रमुख)" : "Assistant Professor (Project Lead)"}
+                      </p>
                     </div>
                   </div>
-                  <p className="text-[11px] text-[#86efac]">Renewable Energy Engineering, MCAET (NDUAT)</p>
+                  <p className="text-[11px] text-[#86efac]">
+                    {lang === "hi" ? "नवीकरणीय ऊर्जा अभियांत्रिकी, MCAET (NDUAT)" : "Renewable Energy Engineering, MCAET (NDUAT)"}
+                  </p>
                   <div className="mt-1.5 pt-1.5 border-t border-white/10 space-y-1">
                     <p className="flex items-center gap-1.5">
                       <Phone className="size-3 text-[#eab308]" />
@@ -923,7 +926,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                         rel="noopener noreferrer"
                         className="text-[#38bdf8] hover:underline flex items-center gap-1 font-semibold text-[11px]"
                       >
-                        <span>LinkedIn प्रोफाइल</span>
+                        <span>{lang === "hi" ? "LinkedIn प्रोफाइल" : "LinkedIn Profile"}</span>
                         <ExternalLink className="size-2.5" />
                       </a>
                     </p>
@@ -942,10 +945,14 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     </div>
                     <div>
                       <p className="font-extrabold text-[#fef08a] text-sm">Akhil Yadav</p>
-                      <p className="text-[11px] text-white/90 font-medium">Lead Developer & System Architect</p>
+                      <p className="text-[11px] text-white/90 font-medium">
+                        {lang === "hi" ? "प्रमुख डेवलपर एवं सिस्टम आर्किटेक्ट" : "Lead Developer & System Architect"}
+                      </p>
                     </div>
                   </div>
-                  <p className="text-[11px] text-[#86efac]">Computer Science & Engineering, MCAET (NDUAT)</p>
+                  <p className="text-[11px] text-[#86efac]">
+                    {lang === "hi" ? "कंप्यूटर साइंस एवं इंजीनियरिंग, MCAET (NDUAT)" : "Computer Science & Engineering, MCAET (NDUAT)"}
+                  </p>
                   <div className="mt-1.5 pt-1.5 border-t border-white/10 space-y-1">
                     <p className="flex items-center gap-1.5">
                       <Phone className="size-3 text-[#eab308]" />
@@ -963,7 +970,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                         rel="noopener noreferrer"
                         className="text-[#38bdf8] hover:underline flex items-center gap-1 font-semibold text-[11px]"
                       >
-                        <span>LinkedIn प्रोफाइल</span>
+                        <span>{lang === "hi" ? "LinkedIn प्रोफाइल" : "LinkedIn Profile"}</span>
                         <ExternalLink className="size-2.5" />
                       </a>
                     </p>
@@ -971,6 +978,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                 </div>
               </div>
             </div>
+            
 
             {/* Column 4: Official Portals & Helpline */}
             <div>
@@ -997,7 +1005,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     rel="noopener noreferrer"
                     className="hover:text-[#fef08a] transition-colors flex items-center justify-between"
                   >
-                    <span>MCAET अम्बेडकर नगर</span>
+                    <span>{lang === "hi" ? "MCAET अम्बेडकर नगर" : "MCAET Ambedkar Nagar"}</span>
                     <ExternalLink className="size-3" />
                   </a>
                 </li>
@@ -1008,7 +1016,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     rel="noopener noreferrer"
                     className="hover:text-[#fef08a] transition-colors flex items-center justify-between"
                   >
-                    <span>कृषि विभाग उत्तर प्रदेश</span>
+                    <span>{lang === "hi" ? "कृषि विभाग उत्तर प्रदेश" : "UP Agriculture Department"}</span>
                     <ExternalLink className="size-3" />
                   </a>
                 </li>
@@ -1019,7 +1027,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     rel="noopener noreferrer"
                     className="hover:text-[#fef08a] transition-colors flex items-center justify-between"
                   >
-                    <span>कृषि दर्शन उ.प्र.</span>
+                    <span>{lang === "hi" ? "कृषि दर्शन उ.प्र." : "Krishi Darshan UP"}</span>
                     <ExternalLink className="size-3" />
                   </a>
                 </li>
@@ -1030,7 +1038,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     rel="noopener noreferrer"
                     className="hover:text-[#fef08a] transition-colors flex items-center justify-between"
                   >
-                    <span>पीएम-किसान पोर्टल</span>
+                    <span>{lang === "hi" ? "पीएम-किसान पोर्टल" : "PM-Kisan Portal"}</span>
                     <ExternalLink className="size-3" />
                   </a>
                 </li>
@@ -1041,7 +1049,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     rel="noopener noreferrer"
                     className="hover:text-[#fef08a] transition-colors flex items-center justify-between"
                   >
-                    <span>एगमार्कनेट (Agmarknet)</span>
+                    <span>{lang === "hi" ? "एगमार्कनेट (Agmarknet)" : "Agmarknet Portal"}</span>
                     <ExternalLink className="size-3" />
                   </a>
                 </li>
@@ -1051,7 +1059,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
                     className="inline-flex items-center gap-1.5 text-xs text-white/70 hover:text-[#fef08a] transition-colors"
                   >
                     <ShieldCheck className="size-3.5 text-[#eab308]" />
-                    <span>प्रशासनिक लॉगिन (Admin Login)</span>
+                    <span>{lang === "hi" ? "प्रशासनिक लॉगिन" : "Admin Portal Login"}</span>
                   </Link>
                 </li>
               </ul>
@@ -1070,7 +1078,7 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           {/* Legal Disclaimer Box */}
           <div className="py-4 my-4 bg-white/5 rounded-lg px-4 text-xs text-white/75 leading-relaxed border border-white/10">
             <p className="font-semibold text-[#fef08a] mb-1">
-              {lang === "hi" ? "अस्वीकरण (Disclaimer):" : "Disclaimer:"}
+              {lang === "hi" ? "अस्वीकरण:" : "Disclaimer:"}
             </p>
             <p>{t("footer.disclaimer")}</p>
           </div>
@@ -1080,10 +1088,10 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
             <p>© {new Date().getFullYear()} {t("meta.siteName")}. {t("footer.copyright")}</p>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
               <Link href="/about" className="hover:text-white transition-colors">
-                {t("about")}
+                {t("nav.about")}
               </Link>
               <Link href="/contact" className="hover:text-white transition-colors">
-                {t("contact")}
+                {t("nav.contact")}
               </Link>
               <Link href="/privacy" className="hover:text-white transition-colors">
                 {t("footer.privacy")}

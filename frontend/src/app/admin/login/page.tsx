@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { ShieldCheck, Lock, User, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { useI18n } from "@/lib/i18n";
 
 export default function AdminLoginPage() {
+  const { lang } = useI18n();
   const [identifier, setIdentifier] = useState("akhil78026@gmail.com");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -70,13 +72,13 @@ export default function AdminLoginPage() {
             <ShieldCheck className="size-8" />
           </div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-[#15803d] bg-[#dcfce7] px-2.5 py-0.5 rounded-full border border-[#86efac]">
-            सुरक्षित प्रशासनिक पोर्टल (Authorized Admins Only)
+            {lang === "hi" ? "सुरक्षित प्रशासनिक पोर्टल" : "Authorized Administrators Only"}
           </span>
           <h1 className="text-2xl font-black text-[#14532d] mt-2">
-            अवध किसान सेवा एडमिन लॉगिन
+            {lang === "hi" ? "अवध किसान सेवा एडमिन लॉगिन" : "Awadh Kisan Seva Admin Login"}
           </h1>
           <p className="text-xs text-[#6b7280] mt-1">
-            केवल अधिकृत सुपर एडमिन एवं पोर्टल प्रबंधकों के लिए
+            {lang === "hi" ? "केवल अधिकृत सुपर एडमिन एवं पोर्टल प्रबंधकों के लिए" : "Restricted portal for super admins and officers"}
           </p>
         </div>
 
@@ -90,14 +92,18 @@ export default function AdminLoginPage() {
         {success && (
           <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center gap-2">
             <CheckCircle2 className="size-4 shrink-0" />
-            <span>सफलतापूर्वक सत्यापित! एडमिन डैशबोर्ड लोड हो रहा है...</span>
+            <span>
+              {lang === "hi"
+                ? "सफलतापूर्वक सत्यापित! एडमिन डैशबोर्ड लोड हो रहा है..."
+                : "Authenticated successfully! Loading admin dashboard..."}
+            </span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              व्यवस्थापक ईमेल अथवा यूज़रनेम (Admin Email / Username) *
+              {lang === "hi" ? "व्यवस्थापक ईमेल अथवा यूज़रनेम *" : "Admin Email or Username *"}
             </label>
             <div className="relative">
               <User className="absolute left-3 top-3 size-4 text-[#9ca3af]" />
@@ -114,7 +120,7 @@ export default function AdminLoginPage() {
 
           <div>
             <label className="block text-xs font-bold text-[#14532d] mb-1">
-              सुरक्षित पासवर्ड (Secure Password) *
+              {lang === "hi" ? "सुरक्षित पासवर्ड *" : "Password *"}
             </label>
             <div className="relative">
               <Lock className="absolute left-3 top-3 size-4 text-[#9ca3af]" />
@@ -137,7 +143,11 @@ export default function AdminLoginPage() {
               fullWidth
               disabled={loading || success}
             >
-              <span>{loading ? "सत्यापित किया जा रहा है..." : "सुरक्षित प्रवेश करें"}</span>
+              <span>
+                {loading
+                  ? (lang === "hi" ? "सत्यापित किया जा रहा है..." : "Authenticating...")
+                  : (lang === "hi" ? "सुरक्षित प्रवेश करें" : "Sign In Securely")}
+              </span>
               <ArrowRight className="size-4" />
             </Button>
           </div>
@@ -145,7 +155,7 @@ export default function AdminLoginPage() {
 
         <div className="mt-6 pt-4 border-t border-[#f3f4f6] text-center text-xs text-[#6b7280]">
           <Link href="/" className="text-[#15803d] hover:underline font-semibold">
-            ← मुख्य किसान पोर्टल पर वापस जाएँ
+            {lang === "hi" ? "← मुख्य किसान पोर्टल पर वापस जाएँ" : "← Back to Public Farmer Portal"}
           </Link>
         </div>
       </div>
