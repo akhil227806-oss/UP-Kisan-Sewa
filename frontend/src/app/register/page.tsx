@@ -201,9 +201,6 @@ function ComboboxSelect({
             <>
               {filtered.map((opt, idx) => {
                 const optText = typeof opt === "string" ? opt : (lang === "hi" ? opt.name_hi : (opt.name_en || opt.name_hi));
-                const subText = typeof opt !== "string" && opt.name_en && opt.name_hi
-                  ? (lang === "hi" ? ` (${opt.name_en})` : ` (${opt.name_hi})`)
-                  : "";
                 const isSelected = optText === value || (typeof opt !== "string" && (opt.name_hi === value || opt.name_en === value));
                 return (
                   <button
@@ -215,7 +212,6 @@ function ComboboxSelect({
                   >
                     <span>
                       {optText}
-                      {subText && <span className="text-[#6b7280] text-[11px]">{subText}</span>}
                     </span>
                     {isSelected && <CheckCircle2 className="size-3.5 text-[#15803d]" />}
                   </button>
@@ -501,7 +497,7 @@ export default function RegisterPage() {
   // 7. GPS Geolocation Handler -> Reverse Geocode in 1 Click
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert("आपके डिवाइस में जीपीएस लोकेशन उपलब्ध नहीं है (Geolocation not supported)");
+      alert(lang === "hi" ? "आपके डिवाइस में जीपीएस लोकेशन उपलब्ध नहीं है।" : "Geolocation is not supported on this device.");
       return;
     }
 
@@ -599,10 +595,13 @@ export default function RegisterPage() {
       }
 
       setOtpSent(true);
+      if (data.dev_otp && data.dev_otp.length === 6) {
+        setOtpDigits(data.dev_otp.split(""));
+      }
       setSuccessMessage(
         lang === "hi"
-          ? `सत्यापन कोड (OTP) ${cleanEmail} पर भेज दिया गया है। कृपया अपना इनबॉक्स अथवा स्पैम फोल्डर देखें।`
-          : `Verification code (OTP) sent to ${cleanEmail}. Please check your inbox or spam folder.`
+          ? `सत्यापन कोड ${data.dev_otp ? `(OTP: ${data.dev_otp}) ` : ""}${cleanEmail} पर प्रेषित किया गया है। कृपया अपना इनबॉक्स या स्पैम फोल्डर देखें।`
+          : `Verification code ${data.dev_otp ? `(OTP: ${data.dev_otp}) ` : ""}sent to ${cleanEmail}. Please check your inbox or spam folder.`
       );
       startCooldown(data.cooldown_seconds || 45);
       // Focus first OTP box
@@ -706,7 +705,7 @@ export default function RegisterPage() {
     }
 
     if (!selectedDistrict) {
-      setError(lang === "hi" ? "कृपया अपना जनपद (District) चुनें अथवा दर्ज करें।" : "Please select or enter your district.");
+      setError(lang === "hi" ? "कृपया अपना जनपद चुनें अथवा दर्ज करें।" : "Please select or enter your district.");
       return;
     }
 

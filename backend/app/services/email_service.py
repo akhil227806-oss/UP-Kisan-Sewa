@@ -153,6 +153,7 @@ def generate_otp_email_html(otp_code: str, farmer_name: str) -> str:
 </html>"""
 
 
+
 def send_email_otp(to_email: str, farmer_name: str, otp_code: str) -> dict[str, Any]:
     """Send branded OTP email via configured Gmail SMTP with fallback delivery reporting."""
     html_body = generate_otp_email_html(otp_code, farmer_name)

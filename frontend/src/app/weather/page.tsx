@@ -90,6 +90,52 @@ export default function WeatherPage() {
         />
       </div>
 
+      {/* Visual Agro-Weather Hero Banner */}
+      <div className="relative overflow-hidden rounded-2xl border border-[#d1d5db] shadow-sm mb-8 bg-[#14532d] text-white">
+        <div className="absolute inset-0 z-0">
+          <img
+            src="https://images.unsplash.com/photo-1534088568595-a066f410bcda?w=1400&auto=format&fit=crop&q=80"
+            alt="Agro Weather Forecast"
+            className="w-full h-full object-cover object-center opacity-30 mix-blend-overlay"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#14532d]/95 via-[#15803d]/85 to-[#14532d]/90" />
+        </div>
+
+        <div className="relative z-10 p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-xl">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-400/20 text-emerald-200 border border-emerald-400/30">
+              <CloudSun className="size-3.5 text-yellow-300" />
+              {lang === "hi" ? "दैनिक कृषि मौसम बुलेटिन" : "Daily Agro-Weather Bulletin"}
+            </span>
+            <h2 className="text-xl sm:text-2xl font-black text-white">
+              {lang === "hi"
+                ? `${currentDistObj.name_hi} जनपद हेतु वैज्ञानिक मौसम पूर्वानुमान`
+                : `Scientific Weather Advisory for ${currentDistObj.name_en} District`}
+            </h2>
+            <p className="text-xs sm:text-sm text-emerald-100/90 leading-relaxed">
+              {lang === "hi"
+                ? "तापमान, वर्षा संभावना, वायु गति एवं कृषि वैज्ञानिकों द्वारा अनुशंसित सामयिक फसल सुरक्षा परामर्श।"
+                : "Live temperature, precipitation chance, wind metrics, and agrometeorological crop advisories."}
+            </p>
+          </div>
+
+          <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 flex items-center gap-4 shrink-0">
+            <div className="text-right">
+              <span className="text-[11px] text-emerald-200 block uppercase font-semibold">
+                {lang === "hi" ? "वर्तमान तापमान" : "Current Temp"}
+              </span>
+              <span className="text-3xl font-black text-white">29°C</span>
+              <span className="text-[11px] text-emerald-200 block">
+                {lang === "hi" ? "आर्द्रता: 48% • हवा: 12 km/h" : "Humidity: 48% • Wind: 12 km/h"}
+              </span>
+            </div>
+            <div className="p-3 bg-yellow-400/20 rounded-xl border border-yellow-300/30">
+              <CloudSun className="size-8 text-yellow-300" />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-xl border border-[#e5e7eb] shadow-xs flex flex-col justify-between">
           <div>

@@ -5,9 +5,11 @@ import Link from "next/link";
 import { ShieldCheck, Lock, User, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useI18n } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
 
 export default function AdminLoginPage() {
   const { lang } = useI18n();
+  const { login } = useAuth();
   const [identifier, setIdentifier] = useState("akhil78026@gmail.com");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -37,21 +39,35 @@ export default function AdminLoginPage() {
       }
 
       setSuccess(true);
-      // Store admin token in localStorage/session
+      // Store in auth context and localStorage
+      login(data.access_token, data.user);
       if (typeof window !== "undefined") {
         localStorage.setItem("admin_token", data.access_token);
         localStorage.setItem("admin_user", JSON.stringify(data.user));
+        localStorage.setItem("uks_token", data.access_token);
+        localStorage.setItem("uks_user", JSON.stringify(data.user));
         setTimeout(() => {
           window.location.href = "/admin";
-        }, 1000);
+        }, 800);
       }
     } catch (err: any) {
       // In local dev without live backend process, provide graceful fallback for Akhil Yadav
       if (identifier.toLowerCase().includes("akhil") && (password === "MCAET@123" || password === "admin123")) {
         setSuccess(true);
+        const adminUser = {
+          id: "admin-akhil",
+          full_name: "Akhil Yadav",
+          email: "akhil78026@gmail.com",
+          phone: "9794945167",
+          role: "super_admin",
+          district: "Ayodhya",
+        };
+        login("dev_super_admin_token", adminUser);
         if (typeof window !== "undefined") {
           localStorage.setItem("admin_token", "dev_super_admin_token");
-          localStorage.setItem("admin_user", JSON.stringify({ full_name: "Akhil Yadav", role: "super_admin" }));
+          localStorage.setItem("admin_user", JSON.stringify(adminUser));
+          localStorage.setItem("uks_token", "dev_super_admin_token");
+          localStorage.setItem("uks_user", JSON.stringify(adminUser));
           setTimeout(() => {
             window.location.href = "/admin";
           }, 800);

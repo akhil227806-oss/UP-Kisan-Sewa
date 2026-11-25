@@ -273,6 +273,14 @@ const SCHEMES_DATABASE: Record<string, SchemeDetail> = {
   },
 };
 
+const SCHEME_IMAGES: Record<string, string> = {
+  "pm-kisan": "/schemes/pm-kisan.jpg",
+  "pmfby": "/schemes/pmfby.jpg",
+  "kusum-solar-pump": "/schemes/solar-pump.jpg",
+  "up-khet-talab": "/schemes/khet-talab.jpg",
+  "krishi-yantrikaran-token": "/schemes/mechanization.jpg",
+};
+
 export default function SchemeDetailPage({
   params,
 }: {
@@ -330,24 +338,36 @@ export default function SchemeDetailPage({
       </div>
 
       {/* Hero Scheme Card */}
-      <div className="bg-gradient-to-r from-[#14532d] via-[#15803d] to-[#14532d] text-white rounded-2xl p-6 sm:p-8 shadow-md mb-8">
-        <div className="flex items-center gap-2 mb-2">
-          <Badge variant="accent" size="sm" className="font-bold text-[#14532d]">
-            {lang === "hi" ? scheme.category_hi : scheme.category_en}
-          </Badge>
-          <span className="text-xs text-[#86efac]">
-            {lang === "hi" ? "सत्यापित सरकारी योजना" : "Verified Govt Scheme"}
-          </span>
+      <div className="bg-gradient-to-r from-[#14532d] via-[#15803d] to-[#14532d] text-white rounded-2xl p-6 sm:p-8 shadow-md mb-8 overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2 flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <Badge variant="accent" size="sm" className="font-bold text-[#14532d]">
+                {lang === "hi" ? scheme.category_hi : scheme.category_en}
+              </Badge>
+              <span className="text-xs text-[#86efac]">
+                {lang === "hi" ? "सत्यापित सरकारी योजना" : "Verified Govt Scheme"}
+              </span>
+            </div>
+
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+              {lang === "hi" ? scheme.name_hi : scheme.name_en}
+            </h1>
+
+            <p className="text-xs sm:text-sm text-[#bbf7d0] flex items-center gap-1.5 pt-1">
+              <Building className="size-4 text-[#86efac] shrink-0" />
+              <span>{lang === "hi" ? scheme.department_hi : scheme.department_en}</span>
+            </p>
+          </div>
+
+          <div className="w-full md:w-56 h-36 rounded-xl overflow-hidden shadow-lg border-2 border-white/20 shrink-0">
+            <img
+              src={SCHEME_IMAGES[scheme.slug] || "/schemes/pm-kisan.jpg"}
+              alt={scheme.name_hi}
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
-
-        <h1 className="text-2xl sm:text-3xl font-black tracking-tight mb-2">
-          {lang === "hi" ? scheme.name_hi : scheme.name_en}
-        </h1>
-
-        <p className="text-xs sm:text-sm text-[#bbf7d0] mb-6 flex items-center gap-1.5">
-          <Building className="size-4 text-[#86efac] shrink-0" />
-          <span>{lang === "hi" ? scheme.department_hi : scheme.department_en}</span>
-        </p>
 
         <div className="bg-white/10 backdrop-blur-xs p-4 rounded-xl border border-white/20">
           <span className="text-xs font-bold text-[#fef08a] block mb-1">

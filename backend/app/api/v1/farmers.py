@@ -90,3 +90,91 @@ async def update_my_farmer_profile(
             "pincode": updated.get("pincode")
         }
     }
+
+
+class FarmerCropIn(BaseModel):
+    name: str
+    season: str
+    area: str
+    sowingDate: str
+    stage: str | None = "वानस्पतिक वृद्धि अवस्था"
+    slug: str | None = "gehu-sample"
+
+
+@router.get("/me/crops")
+async def get_my_crops(current_user: dict[str, Any] = Depends(get_current_user)) -> list[dict[str, Any]]:
+    """Retrieve all crops registered by the logged-in farmer."""
+    db = get_db()
+    user_id = str(current_user["_id"])
+    cursor = db.farmer_crops.find({"$or": [{"user_id": user_id}, {"email": current_user.get("email")}]})
+    crops = await cursor.to_list(100)
+    if not crops:
+        # Default starter crops for verified user
+        default_crops = [
+            {
+                "id": "c1",
+                "user_id": user_id,
+                "email": current_user.get("email"),
+                "name": "गेहूँ (DBW 187 / करण वंदना)",
+                "season": "रबी 2025-26",
+                "area": "2.5 एकड़",
+                "sowingDate": "2025-11-20",
+                "stage": "दाना पकने की अवस्था",
+                "slug": "gehu-sample",
+            },
+            {
+                "id": "c2",
+                "user_id": user_id,
+                "email": current_user.get("email"),
+                "name": "सरसों (NDR 8501)",
+                "season": "रबी 2025-26",
+                "area": "1.0 एकड़",
+                "sowingDate": "2025-10-10",
+                "stage": "कटाई योग्य / पक्व अवस्था",
+                "slug": "sarson-sample",
+            },
+        ]
+        for c in default_crops:
+            await db.farmer_crops.insert_one(dict(c))
+        return default_crops
+    return crops
+
+
+@router.post("/me/crops")
+async def add_farmer_crop(payload: FarmerCropIn, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    """Register a new crop plot for the farmer."""
+    import time
+    db = get_db()
+    user_id = str(current_user["_id"])
+    crop_doc = {
+        "id": f"c_{int(time.time() * 1000)}",
+        "user_id": user_id,
+        "email": current_user.get("email"),
+        "name": payload.name,
+        "season": payload.season,
+        "area": payload.area,
+        "sowingDate": payload.sowingDate,
+        "stage": payload.stage or "वानस्पतिक वृद्धि अवस्था",
+        "slug": payload.slug or "gehu-sample",
+    }
+    await db.farmer_crops.insert_one(crop_doc)
+    return {"status": "success", "message": "फसल सफलतापूर्वक पंजीकृत की गई", "crop": crop_doc}
+
+
+@router.delete("/me/crops/{crop_id}")
+async def delete_farmer_crop(crop_id: str, current_user: dict[str, Any] = Depends(get_current_user)) -> dict[str, Any]:
+    """Remove a crop record."""
+    db = get_db()
+    user_id = str(current_user["_id"])
+    await db.farmer_crops.delete_one({"id": crop_id, "$or": [{"user_id": user_id}, {"email": current_user.get("email")}]})
+    return {"status": "success", "message": "फसल हटा दी गई"}
+
+
+@router.get("/me/questions")
+async def get_my_questions(current_user: dict[str, Any] = Depends(get_current_user)) -> list[dict[str, Any]]:
+    """Retrieve all expert questions asked by the farmer."""
+    db = get_db()
+    email = current_user.get("email")
+    cursor = db.expert_questions.find({"farmer_email": email}, {"_id": 0}).sort("created_at", -1)
+    return await cursor.to_list(100)
+

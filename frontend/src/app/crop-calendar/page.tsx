@@ -109,16 +109,36 @@ export default function CropCalendarPage() {
       </div>
 
       {/* Month Activities Detail */}
-      <div className="bg-white p-6 rounded-xl border border-[#e5e7eb] shadow-xs mb-8">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e5e7eb] pb-4 mb-6">
-          <div className="flex items-center gap-2">
-            <Calendar className="size-6 text-[#15803d]" />
-            <h3 className="text-xl font-bold text-[#14532d]">{current.title_hi}</h3>
+      <div className="bg-white rounded-2xl border border-[#e5e7eb] shadow-xs mb-8 overflow-hidden">
+        {/* Seasonal Visual Banner */}
+        <div className="relative h-44 sm:h-52 w-full overflow-hidden">
+          <img
+            src={
+              ["june", "july", "august", "september"].includes(selectedMonth)
+                ? "/crops/paddy.jpg"
+                : ["february", "march", "april", "may"].includes(selectedMonth)
+                ? "/crops/maize.jpg"
+                : "/crops/wheat.jpg"
+            }
+            alt={current.season}
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute bottom-4 left-6 right-6 flex flex-wrap items-end justify-between gap-3 text-white">
+            <div>
+              <span className="text-xs font-bold bg-[#15803d] text-white px-3 py-1 rounded-full shadow-xs mb-1.5 inline-block">
+                {current.season}
+              </span>
+              <h3 className="text-xl sm:text-2xl font-black text-white">{current.title_hi}</h3>
+            </div>
+            <div className="text-xs text-[#86efac] font-semibold bg-white/10 backdrop-blur-xs px-3 py-1.5 rounded-lg border border-white/20">
+              {lang === "hi" ? "कृषि वेधशाला अनुपालन" : "Agro-Meteorology Sync"}
+            </div>
           </div>
-          <Badge variant="success" size="md">{current.season}</Badge>
         </div>
 
-        <div className="space-y-4 mb-6">
+        <div className="p-6">
+          <div className="space-y-4 mb-6">
           {current.activities.map((act: any, idx: number) => (
             <div key={idx} className="p-4 bg-[#f8faf5] border border-[#e5e7eb] rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
@@ -136,6 +156,7 @@ export default function CropCalendarPage() {
 
         <div className="p-4 bg-[#f0fdf4] border border-[#bbf7d0] rounded-xl text-xs sm:text-sm text-[#14532d]">
           <strong>विशेष वैज्ञानिक परामर्श: </strong>{current.advisory}
+        </div>
         </div>
       </div>
 

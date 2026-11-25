@@ -356,69 +356,102 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Kharif */}
-          <div className="bg-white border border-[#e5e7eb] rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-[#f97316] bg-[#fff7ed] px-2.5 py-0.5 rounded-full border border-[#ffedd5]">
-                {lang === "hi" ? "खरीफ फसलें" : "Kharif Crops"}
-              </span>
-              <Calendar className="size-4 text-[#f97316]" />
+          <div className="bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="relative h-44 w-full overflow-hidden">
+                <img
+                  src="/crops/paddy.jpg"
+                  alt="Kharif Crops"
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+                <span className="absolute top-3 left-3 text-xs font-bold text-[#f97316] bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full border border-[#ffedd5] shadow-xs flex items-center gap-1.5">
+                  <Calendar className="size-3 text-[#f97316]" />
+                  {lang === "hi" ? "खरीफ फसलें (जून - अक्टूबर)" : "Kharif Crops (Jun - Oct)"}
+                </span>
+              </div>
+              <div className="p-5">
+                <h3 className="font-bold text-[#14532d] text-base mb-1">
+                  {lang === "hi" ? "धान, मक्का, बाजरा, उर्द" : "Paddy, Maize, Bajra, Urad"}
+                </h3>
+                <p className="text-xs text-[#4b5563] leading-relaxed">
+                  {lang === "hi"
+                    ? "मानसूनी वर्षा आधारित फसलें। बुवाई समय: जून-जुलाई। जल प्रबंधन, नर्सरी तैयारी एवं संतुलित एनपीके मार्गदर्शन।"
+                    : "Monsoon season crops. Sowing time: June-July. Water management, nursery preparation, and balanced NPK guidance."}
+                </p>
+              </div>
             </div>
-            <h3 className="font-bold text-[#14532d] text-base mb-1">
-              {lang === "hi" ? "धान, मक्का, बाजरा, उर्द" : "Paddy, Maize, Bajra, Urad"}
-            </h3>
-            <p className="text-xs text-[#4b5563] leading-relaxed mb-4">
-              {lang === "hi"
-                ? "मानसूनी वर्षा आधारित फसलें। बुवाई समय: जून-जुलाई। जल प्रबंधन, नर्सरी तैयारी एवं संतुलित एनपीके मार्गदर्शन।"
-                : "Monsoon season crops. Sowing time: June-July. Water management, nursery preparation, and balanced NPK guidance."}
-            </p>
-            <Link href="/crops?season=kharif" className="text-xs font-bold text-[#15803d] hover:underline flex items-center gap-1">
-              <span>{lang === "hi" ? "खरीफ पैकेज देखें" : "Explore Kharif Package"}</span>
-              <ArrowRight className="size-3" />
-            </Link>
+            <div className="px-5 pb-5 pt-0">
+              <Link href="/crops?season=kharif" className="text-xs font-bold text-[#15803d] hover:underline flex items-center gap-1">
+                <span>{lang === "hi" ? "खरीफ पैकेज देखें" : "Explore Kharif Package"}</span>
+                <ArrowRight className="size-3" />
+              </Link>
+            </div>
           </div>
 
           {/* Rabi */}
-          <div className="bg-white border border-[#e5e7eb] rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-[#15803d] bg-[#dcfce7] px-2.5 py-0.5 rounded-full border border-[#86efac]">
-                {lang === "hi" ? "रबी फसलें" : "Rabi Crops"}
-              </span>
-              <Calendar className="size-4 text-[#15803d]" />
+          <div className="bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="relative h-44 w-full overflow-hidden">
+                <img
+                  src="/crops/wheat.jpg"
+                  alt="Rabi Crops"
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+                <span className="absolute top-3 left-3 text-xs font-bold text-[#15803d] bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full border border-[#86efac] shadow-xs flex items-center gap-1.5">
+                  <Calendar className="size-3 text-[#15803d]" />
+                  {lang === "hi" ? "रबी फसलें (अक्टूबर - मार्च)" : "Rabi Crops (Oct - Mar)"}
+                </span>
+              </div>
+              <div className="p-5">
+                <h3 className="font-bold text-[#14532d] text-base mb-1">
+                  {lang === "hi" ? "गेहूँ, सरसों, चना, मटर" : "Wheat, Mustard, Gram, Peas"}
+                </h3>
+                <p className="text-xs text-[#4b5563] leading-relaxed">
+                  {lang === "hi"
+                    ? "शीतकालीन फसलें। बुवाई समय: अक्टूबर-नवंबर। सिंचित दशा में क्राउन रूट इनिशिएशन (CRI) सिंचाई एवं खरपतवार नियंत्रण।"
+                    : "Winter season crops. Sowing time: October-November. Irrigated conditions Crown Root Initiation (CRI) and weed management."}
+                </p>
+              </div>
             </div>
-            <h3 className="font-bold text-[#14532d] text-base mb-1">
-              {lang === "hi" ? "गेहूँ, सरसों, चना, मटर" : "Wheat, Mustard, Gram, Peas"}
-            </h3>
-            <p className="text-xs text-[#4b5563] leading-relaxed mb-4">
-              {lang === "hi"
-                ? "शीतकालीन फसलें। बुवाई समय: अक्टूबर-नवंबर। सिंचित दशा में क्राउन रूट इनिशिएशन (CRI) सिंचाई एवं खरपतवार नियंत्रण।"
-                : "Winter season crops. Sowing time: October-November. Irrigated conditions Crown Root Initiation (CRI) and weed management."}
-            </p>
-            <Link href="/crops?season=rabi" className="text-xs font-bold text-[#15803d] hover:underline flex items-center gap-1">
-              <span>{lang === "hi" ? "रबी पैकेज देखें" : "Explore Rabi Package"}</span>
-              <ArrowRight className="size-3" />
-            </Link>
+            <div className="px-5 pb-5 pt-0">
+              <Link href="/crops?season=rabi" className="text-xs font-bold text-[#15803d] hover:underline flex items-center gap-1">
+                <span>{lang === "hi" ? "रबी पैकेज देखें" : "Explore Rabi Package"}</span>
+                <ArrowRight className="size-3" />
+              </Link>
+            </div>
           </div>
 
           {/* Zaid */}
-          <div className="bg-white border border-[#e5e7eb] rounded-2xl p-5 shadow-xs">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-[#eab308] bg-[#fefce8] px-2.5 py-0.5 rounded-full border border-[#fef08a]">
-                {lang === "hi" ? "जायद व सब्जी फसलें" : "Zaid & Vegetables"}
-              </span>
-              <Calendar className="size-4 text-[#eab308]" />
+          <div className="bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="relative h-44 w-full overflow-hidden">
+                <img
+                  src="/crops/maize.jpg"
+                  alt="Zaid Crops"
+                  className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                />
+                <span className="absolute top-3 left-3 text-xs font-bold text-[#ca8a04] bg-white/95 backdrop-blur-xs px-2.5 py-1 rounded-full border border-[#fef08a] shadow-xs flex items-center gap-1.5">
+                  <Calendar className="size-3 text-[#ca8a04]" />
+                  {lang === "hi" ? "जायद फसलें (मार्च - जून)" : "Zaid Crops (Mar - Jun)"}
+                </span>
+              </div>
+              <div className="p-5">
+                <h3 className="font-bold text-[#14532d] text-base mb-1">
+                  {lang === "hi" ? "मूंग, उड़द, तरबूज, खीरा" : "Moong, Urad, Watermelon, Cucumber"}
+                </h3>
+                <p className="text-xs text-[#4b5563] leading-relaxed">
+                  {lang === "hi"
+                    ? "ग्रीष्मकालीन फसलें। बुवाई समय: मार्च-अप्रैल। अतिरिक्त आय सृजन हेतु 60-70 दिनों की अल्पकालिक दलहन व कुकरबिट्स।"
+                    : "Summer season crops. Sowing time: March-April. Short-duration pulses and cucurbits for extra farm income."}
+                </p>
+              </div>
             </div>
-            <h3 className="font-bold text-[#14532d] text-base mb-1">
-              {lang === "hi" ? "मूंग, उड़द, तरबूज, खीरा" : "Moong, Urad, Watermelon, Cucumber"}
-            </h3>
-            <p className="text-xs text-[#4b5563] leading-relaxed mb-4">
-              {lang === "hi"
-                ? "ग्रीष्मकालीन फसलें। बुवाई समय: मार्च-अप्रैल। अतिरिक्त आय सृजन हेतु 60-70 दिनों की अल्पकालिक दलहन व कुकरबिट्स।"
-                : "Summer season crops. Sowing time: March-April. Short-duration pulses and cucurbits for extra farm income."}
-            </p>
-            <Link href="/crops?season=zaid" className="text-xs font-bold text-[#15803d] hover:underline flex items-center gap-1">
-              <span>{lang === "hi" ? "जायद पैकेज देखें" : "Explore Zaid Package"}</span>
-              <ArrowRight className="size-3" />
-            </Link>
+            <div className="px-5 pb-5 pt-0">
+              <Link href="/crops?season=zaid" className="text-xs font-bold text-[#15803d] hover:underline flex items-center gap-1">
+                <span>{lang === "hi" ? "जायद पैकेज देखें" : "Explore Zaid Package"}</span>
+                <ArrowRight className="size-3" />
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -427,26 +460,37 @@ export default function HomePage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Disease Management */}
-          <div className="bg-white border border-[#e5e7eb] rounded-2xl p-6 shadow-xs">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-2 rounded-lg bg-red-50 text-red-700">
-                <ShieldAlert className="size-5" />
+          <div className="bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="relative h-44 w-full overflow-hidden">
+                <img
+                  src="/pests/plant-disease.jpg"
+                  alt="Crop Disease Management"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <span className="absolute bottom-3 left-4 text-xs font-bold text-white bg-red-600/90 backdrop-blur-xs px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1.5">
+                  <ShieldAlert className="size-3.5" />
+                  {lang === "hi" ? "सटीक वैज्ञानिक रोकथाम" : "Scientific Disease Control"}
+                </span>
               </div>
-              <div>
-                <h3 className="font-bold text-base text-[#14532d]">
-                  {lang === "hi" ? "फसल रोग एवं कीट नियंत्रण (IPM)" : "Crop Disease & Pest Management (IPM)"}
-                </h3>
-                <p className="text-xs text-[#6b7280]">
-                  {lang === "hi" ? "वैज्ञानिक संस्तुतियों पर आधारित सटीक रोकथाम" : "Scientific recommendations for timely control"}
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1.5 rounded-lg bg-red-50 text-red-700">
+                    <ShieldAlert className="size-4" />
+                  </div>
+                  <h3 className="font-bold text-base text-[#14532d]">
+                    {lang === "hi" ? "फसल रोग एवं कीट नियंत्रण (IPM)" : "Crop Disease & Pest Management (IPM)"}
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-sm text-[#4b5563] leading-relaxed">
+                  {lang === "hi"
+                    ? "गेहूँ का पीला रतुआ, धान का झुलसा, सरसों का छाछिया रोग एवं फॉल आर्मीवर्म जैसे विनाशकारी कीटों की प्रारंभिक पहचान एवं समन्वित जैविक-रासायनिक प्रबंधन।"
+                    : "Early identification and integrated biological-chemical management of Yellow Rust in wheat, Blast in paddy, Powdery Mildew in mustard, and Fall Armyworm."}
                 </p>
               </div>
             </div>
-            <p className="text-xs sm:text-sm text-[#4b5563] leading-relaxed mb-4">
-              {lang === "hi"
-                ? "गेहूँ का पीला रतुआ, धान का झुलसा (Blight), सरसों का छाछिया रोग एवं फॉल आर्मीवर्म जैसे विनाशकारी कीटों की प्रारंभिक पहचान एवं समन्वित जैविक-रासायनिक प्रबंधन।"
-                : "Early identification and integrated biological-chemical management of Yellow Rust in wheat, Blast in paddy, Powdery Mildew in mustard, and Fall Armyworm."}
-            </p>
-            <div className="flex gap-3">
+            <div className="px-6 pb-6 pt-0 flex gap-3">
               <Link href="/diseases">
                 <Button variant="outline" size="sm">
                   {lang === "hi" ? "रोग निर्देशिका देखें" : "View Disease Directory"}
@@ -461,26 +505,37 @@ export default function HomePage() {
           </div>
 
           {/* Soil Health & Testing */}
-          <div className="bg-white border border-[#e5e7eb] rounded-2xl p-6 shadow-xs">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-2 rounded-lg bg-amber-50 text-amber-700">
-                <Layers className="size-5" />
+          <div className="bg-white border border-[#e5e7eb] rounded-2xl overflow-hidden shadow-xs flex flex-col justify-between">
+            <div>
+              <div className="relative h-44 w-full overflow-hidden">
+                <img
+                  src="/soil/soil-health-card.jpg"
+                  alt="Soil Health Testing"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <span className="absolute bottom-3 left-4 text-xs font-bold text-white bg-amber-600/90 backdrop-blur-xs px-2.5 py-1 rounded-full shadow-xs flex items-center gap-1.5">
+                  <Layers className="size-3.5" />
+                  {lang === "hi" ? "उर्वरक बचत व जांच" : "Fertilizer Savings & Labs"}
+                </span>
               </div>
-              <div>
-                <h3 className="font-bold text-base text-[#14532d]">
-                  {lang === "hi" ? "मृदा स्वास्थ्य एवं प्रयोगशाला परीक्षण" : "Soil Health & Laboratory Testing"}
-                </h3>
-                <p className="text-xs text-[#6b7280]">
-                  {lang === "hi" ? "संतुलित पोषण एवं उर्वरक बचत" : "Balanced nutrition and fertilizer savings"}
+              <div className="p-6">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1.5 rounded-lg bg-amber-50 text-amber-700">
+                    <Layers className="size-4" />
+                  </div>
+                  <h3 className="font-bold text-base text-[#14532d]">
+                    {lang === "hi" ? "मृदा स्वास्थ्य एवं प्रयोगशाला परीक्षण" : "Soil Health & Laboratory Testing"}
+                  </h3>
+                </div>
+                <p className="text-xs sm:text-sm text-[#4b5563] leading-relaxed">
+                  {lang === "hi"
+                    ? "खेत की मिट्टी का नमूना लेने की प्रामाणिक 5-चरणीय विधि, सॉइल हेल्थ कार्ड का महत्व एवं उत्तर प्रदेश के सभी 75 जिलों में स्थित सरकारी मृदा परीक्षण प्रयोगशालाओं की सूची।"
+                    : "Standard 5-step soil sampling protocol, significance of Soil Health Cards, and directory of government soil testing laboratories across all 75 UP districts."}
                 </p>
               </div>
             </div>
-            <p className="text-xs sm:text-sm text-[#4b5563] leading-relaxed mb-4">
-              {lang === "hi"
-                ? "खेत की मिट्टी का नमूना लेने की प्रामाणिक 5-चरणीय विधि, सॉइल हेल्थ कार्ड का महत्व एवं उत्तर प्रदेश के सभी 75 जिलों में स्थित सरकारी मृदा परीक्षण प्रयोगशालाओं की सूची।"
-                : "Standard 5-step soil sampling protocol, significance of Soil Health Cards, and directory of government soil testing laboratories across all 75 UP districts."}
-            </p>
-            <div className="flex gap-3">
+            <div className="px-6 pb-6 pt-0 flex gap-3">
               <Link href="/soil-health">
                 <Button variant="outline" size="sm">
                   {lang === "hi" ? "मिट्टी जांच विधि" : "Soil Testing Method"}
@@ -515,52 +570,60 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-xs">
-              <Video className="size-6 text-[#15803d] mb-2" />
-              <h4 className="font-bold text-sm text-[#14532d] mb-1">
-                {lang === "hi" ? "सोलर पंप अनुदान" : "Solar Pump Subsidy"}
-              </h4>
-              <p className="text-xs text-[#4b5563] line-clamp-2">
-                {lang === "hi"
-                  ? "कुसुम योजना अंतर्गत सोलर पंप हेतु ऑनलाइन टोकन प्रक्रिया।"
-                  : "Online token process for solar pump subsidies under PM-KUSUM."}
-              </p>
+            <div className="bg-white rounded-xl border border-[#e5e7eb] shadow-xs overflow-hidden flex flex-col justify-between">
+              <img src="/schemes/solar-pump.jpg" alt="Solar Pump" className="w-full h-28 object-cover" />
+              <div className="p-3.5">
+                <h4 className="font-bold text-sm text-[#14532d] mb-1">
+                  {lang === "hi" ? "सोलर पंप अनुदान" : "Solar Pump Subsidy"}
+                </h4>
+                <p className="text-xs text-[#4b5563] line-clamp-2">
+                  {lang === "hi"
+                    ? "कुसुम योजना अंतर्गत सोलर पंप हेतु ऑनलाइन टोकन प्रक्रिया।"
+                    : "Online token process for solar pump subsidies under PM-KUSUM."}
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-xs">
-              <Video className="size-6 text-[#15803d] mb-2" />
-              <h4 className="font-bold text-sm text-[#14532d] mb-1">
-                {lang === "hi" ? "प्राकृतिक जीवामृत निर्माण" : "Natural Jeevamrit Prep"}
-              </h4>
-              <p className="text-xs text-[#4b5563] line-clamp-2">
-                {lang === "hi"
-                  ? "देसी गाय के गोबर-गोमूत्र से जीवामृत और घनजीवामृत बनाने की विधि।"
-                  : "Preparation method of Jeevamrit and Ghan-Jeevamrit from indigenous cattle."}
-              </p>
+            <div className="bg-white rounded-xl border border-[#e5e7eb] shadow-xs overflow-hidden flex flex-col justify-between">
+              <img src="/seeds/organic-compost.jpg" alt="Natural Jeevamrit" className="w-full h-28 object-cover" />
+              <div className="p-3.5">
+                <h4 className="font-bold text-sm text-[#14532d] mb-1">
+                  {lang === "hi" ? "प्राकृतिक जीवामृत निर्माण" : "Natural Jeevamrit Prep"}
+                </h4>
+                <p className="text-xs text-[#4b5563] line-clamp-2">
+                  {lang === "hi"
+                    ? "देसी गाय के गोबर-गोमूत्र से जीवामृत और घनजीवामृत बनाने की विधि।"
+                    : "Preparation method of Jeevamrit and Ghan-Jeevamrit from indigenous cattle."}
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-xs">
-              <BookOpen className="size-6 text-[#15803d] mb-2" />
-              <h4 className="font-bold text-sm text-[#14532d] mb-1">
-                {lang === "hi" ? "ड्रिप व स्प्रिंकलर सिंचाई" : "Drip & Sprinkler Irrigation"}
-              </h4>
-              <p className="text-xs text-[#4b5563] line-clamp-2">
-                {lang === "hi"
-                  ? "प्रति बूंद अधिक फसल योजना अंतर्गत 90% तक जल बचत तकनीक।"
-                  : "Up to 90% water saving techniques under Per Drop More Crop."}
-              </p>
+            <div className="bg-white rounded-xl border border-[#e5e7eb] shadow-xs overflow-hidden flex flex-col justify-between">
+              <img src="/schemes/khet-talab.jpg" alt="Drip Irrigation" className="w-full h-28 object-cover" />
+              <div className="p-3.5">
+                <h4 className="font-bold text-sm text-[#14532d] mb-1">
+                  {lang === "hi" ? "ड्रिप व स्प्रिंकलर सिंचाई" : "Drip & Sprinkler Irrigation"}
+                </h4>
+                <p className="text-xs text-[#4b5563] line-clamp-2">
+                  {lang === "hi"
+                    ? "प्रति बूंद अधिक फसल योजना अंतर्गत 90% तक जल बचत तकनीक।"
+                    : "Up to 90% water saving techniques under Per Drop More Crop."}
+                </p>
+              </div>
             </div>
 
-            <div className="bg-white p-4 rounded-xl border border-[#e5e7eb] shadow-xs">
-              <Award className="size-6 text-[#15803d] mb-2" />
-              <h4 className="font-bold text-sm text-[#14532d] mb-1">
-                {lang === "hi" ? "सफलता की कहानी" : "Farmer Success Story"}
-              </h4>
-              <p className="text-xs text-[#4b5563] line-clamp-2">
-                {lang === "hi"
-                  ? "ड्रैगन फ्रूट एवं मोती पालन से 5 लाख वार्षिक आय करने वाले किसान।"
-                  : "Farmer achieving ₹5 Lakh annual income through dragon fruit cultivation."}
-              </p>
+            <div className="bg-white rounded-xl border border-[#e5e7eb] shadow-xs overflow-hidden flex flex-col justify-between">
+              <img src="/crops/sugarcane.jpg" alt="Farmer Success Story" className="w-full h-28 object-cover" />
+              <div className="p-3.5">
+                <h4 className="font-bold text-sm text-[#14532d] mb-1">
+                  {lang === "hi" ? "सफलता की कहानी" : "Farmer Success Story"}
+                </h4>
+                <p className="text-xs text-[#4b5563] line-clamp-2">
+                  {lang === "hi"
+                    ? "ड्रैगन फ्रूट एवं मोती पालन से 5 लाख वार्षिक आय करने वाले किसान।"
+                    : "Farmer achieving ₹5 Lakh annual income through dragon fruit cultivation."}
+                </p>
+              </div>
             </div>
           </div>
         </div>

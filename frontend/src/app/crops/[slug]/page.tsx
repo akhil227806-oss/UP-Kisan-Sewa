@@ -249,6 +249,17 @@ const CROPS_DATABASE: Record<string, CropDetail> = {
   },
 };
 
+const CROP_IMAGES: Record<string, string> = {
+  "gehu-sample": "/crops/wheat.jpg",
+  "dhan-sample": "/crops/paddy.jpg",
+  "sarson-sample": "/crops/mustard.jpg",
+  "arhar-sample": "/crops/arhar.jpg",
+  "ganna-sample": "/crops/sugarcane.jpg",
+  "aloo-sample": "/crops/potato.jpg",
+  "chana-sample": "/crops/gram.jpg",
+  "makka-sample": "/crops/maize.jpg",
+};
+
 export default function CropDetailPage({
   params,
 }: {
@@ -307,9 +318,9 @@ export default function CropDetailPage({
       </div>
 
       {/* Hero Header Card */}
-      <div className="bg-gradient-to-r from-[#14532d] via-[#15803d] to-[#14532d] text-white rounded-2xl p-6 sm:p-8 shadow-md mb-8">
-        <div className="flex flex-wrap items-start justify-between gap-4">
-          <div>
+      <div className="bg-gradient-to-r from-[#14532d] via-[#15803d] to-[#14532d] text-white rounded-2xl p-6 sm:p-8 shadow-md mb-8 overflow-hidden">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="space-y-2 flex-1">
             <div className="flex items-center gap-2 mb-2">
               <Badge variant="accent" size="sm" className="font-bold text-[#14532d]">
                 {lang === "hi" ? crop.season_hi : crop.season_en}
@@ -321,16 +332,23 @@ export default function CropDetailPage({
             <h1 className="text-3xl sm:text-4xl font-black tracking-tight">
               {lang === "hi" ? crop.name_hi : crop.name_en}
             </h1>
-            <p className="text-sm italic text-[#bbf7d0] mt-1 font-serif">
+            <p className="text-sm italic text-[#bbf7d0] font-serif">
               वानस्पतिक नाम: {crop.botanical}
             </p>
+            <div className="pt-2">
+              <span className="text-[11px] text-[#86efac] block">
+                {lang === "hi" ? "फसल अवधि" : "Duration"}
+              </span>
+              <span className="text-xl font-black text-white">{crop.duration}</span>
+            </div>
           </div>
 
-          <div className="text-right">
-            <span className="text-[11px] text-[#86efac] block">
-              {lang === "hi" ? "फसल अवधि" : "Duration"}
-            </span>
-            <span className="text-xl font-black text-white">{crop.duration}</span>
+          <div className="w-full md:w-56 h-40 rounded-xl overflow-hidden shadow-lg border-2 border-white/20 shrink-0">
+            <img
+              src={CROP_IMAGES[crop.slug] || "/crops/wheat.jpg"}
+              alt={crop.name_hi}
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 

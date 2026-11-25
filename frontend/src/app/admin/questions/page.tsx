@@ -5,6 +5,7 @@ import { HelpCircle, CheckCircle, Clock, Send, MessageSquare, AlertCircle, Refre
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { AdminNavBar } from "@/components/admin/AdminNavBar";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 
@@ -31,7 +32,7 @@ interface QuestionItem {
 
 export default function AdminQuestionsPage() {
   const { lang } = useI18n();
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [questions, setQuestions] = useState<QuestionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"pending" | "answered" | "all">("pending");
@@ -41,10 +42,18 @@ export default function AdminQuestionsPage() {
   const [submitting, setSubmitting] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
 
+  const effectiveToken =
+    token ||
+    (typeof window !== "undefined"
+      ? localStorage.getItem("admin_token") || localStorage.getItem("uks_token") || ""
+      : "");
+
   const fetchQuestions = async () => {
     setLoading(true);
     try {
-      const res = await fetch("/api/v1/questions");
+      const res = await fetch("/api/v1/questions", {
+        headers: effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {},
+      });
       if (res.ok) {
         const data = await res.json();
         const items = Array.isArray(data) ? data : data.items || [];
@@ -65,7 +74,7 @@ export default function AdminQuestionsPage() {
 
   useEffect(() => {
     fetchQuestions();
-  }, []);
+  }, [effectiveToken]);
 
   const handleSendAnswer = async (qId: string) => {
     if (!answerDraft.trim()) return;
@@ -73,7 +82,10 @@ export default function AdminQuestionsPage() {
     try {
       const res = await fetch(`/api/v1/questions/${qId}/answer`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {}),
+        },
         body: JSON.stringify({
           answer: answerDraft.trim(),
           answered_by: scientistName.trim() || "डॉ. नीरज कुमार सिंह, सह-प्राध्यापक (MCAET, NDUAT)",
@@ -146,6 +158,8 @@ export default function AdminQuestionsPage() {
           { label: lang === "hi" ? "परामर्श निगरानी" : "Consultation Monitor" },
         ]}
       />
+
+      <AdminNavBar />
 
       <div className="flex flex-wrap items-center justify-between gap-4 my-6">
         <div>

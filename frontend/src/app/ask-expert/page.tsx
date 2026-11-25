@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 
+
 export default function AskExpertPage() {
   const { lang } = useI18n();
   const { user } = useAuth();
@@ -108,6 +109,35 @@ export default function AskExpertPage() {
               : "Consult qualified NDUAT agriculture specialists directly by submitting your crop problem or pest query"
           }
         />
+      </div>
+
+      {/* Institutional Scientific Panel Trust Banner */}
+      <div className="bg-gradient-to-r from-[#14532d] to-[#15803d] text-white rounded-2xl p-5 sm:p-6 mb-6 shadow-xs flex flex-col sm:flex-row items-center gap-5">
+        <div className="relative size-20 sm:size-24 rounded-2xl overflow-hidden border-2 border-[#86efac] shrink-0 bg-white shadow-md">
+          <img
+            src="/contactus/neeraj.png"
+            alt="Dr. Neeraj Kumar Singh"
+            className="w-full h-full object-cover object-top"
+          />
+        </div>
+        <div className="space-y-1.5 text-center sm:text-left flex-1">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+            <span className="text-[11px] font-bold bg-[#dcfce7] text-[#14532d] px-2.5 py-0.5 rounded-full border border-[#86efac]">
+              {lang === "hi" ? "आचार्य नरेंद्र देव कृषि वि.वि. (ANDUAT)" : "A.N.D. University of Agriculture & Tech (NDUAT)"}
+            </span>
+            <span className="text-[11px] font-bold bg-white/20 text-white px-2.5 py-0.5 rounded-full">
+              {lang === "hi" ? "निःशुल्क डिजिटल सेवा" : "Free Digital Consultation"}
+            </span>
+          </div>
+          <h3 className="text-base sm:text-lg font-black tracking-tight">
+            {lang === "hi" ? "डॉ. नीरज कुमार सिंह एवं वैज्ञानिक परामर्श प्रकोष्ठ" : "Dr. Neeraj Kumar Singh & Agronomy Advisory Panel"}
+          </h3>
+          <p className="text-xs text-[#bbf7d0] leading-relaxed max-w-xl">
+            {lang === "hi"
+              ? "महामाया कृषि अभियांत्रिकी एवं प्रौद्योगिकी महाविद्यालय (MCAET / NDUAT) के वरिष्ठ सस्य वैज्ञानिक व पादप रोग विशेषज्ञ आपके प्रश्नों की जांच कर संस्तुति प्रदान करते हैं।"
+              : "Senior Agronomy Faculty & Plant Pathology Specialists at MCAET / NDUAT Kumarganj, Ayodhya personally review crop queries to provide verified treatment advice."}
+          </p>
+        </div>
       </div>
 
       {submittedId ? (

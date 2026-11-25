@@ -37,7 +37,28 @@ export default function ProfileDashboard() {
       setVillage(user.village || "");
       setPincode(user.pincode || "");
     }
-  }, [user]);
+
+    const effectiveToken = token || localStorage.getItem("uks_token") || localStorage.getItem("admin_token");
+    if (effectiveToken) {
+      fetch("/api/v1/farmers/me", {
+        headers: { Authorization: `Bearer ${effectiveToken}` },
+      })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (data) {
+            setFullName(data.full_name || "");
+            setPhone(data.phone || "");
+            setEmail(data.email || "");
+            setDistrict(data.district || "अयोध्या");
+            setTehsil(data.tehsil || "");
+            setBlock(data.block || "");
+            setVillage(data.village || "");
+            setPincode(data.pincode || "");
+          }
+        })
+        .catch(() => {});
+    }
+  }, [user, token]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,7 +67,7 @@ export default function ProfileDashboard() {
     setSaved(false);
 
     try {
-      const authToken = token || localStorage.getItem("uks_token");
+      const authToken = token || localStorage.getItem("uks_token") || localStorage.getItem("admin_token");
       const res = await fetch("/api/v1/farmers/me", {
         method: "PATCH",
         headers: {

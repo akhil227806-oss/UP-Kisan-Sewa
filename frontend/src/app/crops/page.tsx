@@ -10,6 +10,17 @@ import { Badge } from "@/components/ui/Badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { useI18n } from "@/lib/i18n";
 
+const CROP_IMAGES: Record<string, string> = {
+  "gehu-sample": "/crops/wheat.jpg",
+  "dhan-sample": "/crops/paddy.jpg",
+  "sarson-sample": "/crops/mustard.jpg",
+  "arhar-sample": "/crops/arhar.jpg",
+  "ganna-sample": "/crops/sugarcane.jpg",
+  "aloo-sample": "/crops/potato.jpg",
+  "chana-sample": "/crops/gram.jpg",
+  "makka-sample": "/crops/maize.jpg",
+};
+
 export default function CropsPage() {
   const { lang } = useI18n();
   const [activeSeason, setActiveSeason] = useState("all");
@@ -263,46 +274,56 @@ export default function CropsPage() {
 
       {/* Crop Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredCrops.map((crop) => (
-          <Card key={crop.slug} className="flex flex-col justify-between">
-            <div>
-              <CardHeader className="bg-gradient-to-r from-[#f0fdf4] to-white">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <div className="size-10 rounded-lg bg-[#15803d] text-white flex items-center justify-center font-bold">
-                      <Sprout className="size-5" />
+        {filteredCrops.map((crop) => {
+          const cropImg = CROP_IMAGES[crop.slug] || "/crops/wheat.jpg";
+          return (
+            <Card key={crop.slug} className="flex flex-col justify-between overflow-hidden group">
+              <div>
+                <div className="relative h-44 w-full overflow-hidden bg-[#e5e7eb]">
+                  <img
+                    src={cropImg}
+                    alt={crop.name_hi}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="accent" size="sm" className="shadow-md">
+                      {crop.season_hi}
+                    </Badge>
+                  </div>
+                  <div className="absolute bottom-3 left-3 text-white">
+                    <h3 className="font-black text-lg drop-shadow-md">
+                      {crop.name_hi} ({crop.name_en})
+                    </h3>
+                    <p className="text-[11px] italic text-[#fef08a] drop-shadow-xs">
+                      {crop.botanical}
+                    </p>
+                  </div>
+                </div>
+
+                <CardContent className="space-y-3 pt-4">
+                  <p className="text-xs sm:text-sm text-[#374151] leading-relaxed">
+                    {lang === "hi" ? crop.summary_hi : crop.summary_en}
+                  </p>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs bg-[#f8faf5] p-3 rounded-lg border border-[#e5e7eb]">
+                    <div>
+                      <span className="text-[#6b7280] block">बुवाई समय:</span>
+                      <span className="font-semibold text-[#14532d]">{crop.sowing}</span>
                     </div>
                     <div>
-                      <CardTitle>{crop.name_hi} ({crop.name_en})</CardTitle>
-                      <p className="text-[11px] italic text-[#6b7280]">{crop.botanical}</p>
+                      <span className="text-[#6b7280] block">फसल अवधि:</span>
+                      <span className="font-semibold text-[#14532d]">{crop.duration}</span>
                     </div>
                   </div>
-                  <Badge variant="success" size="sm">{crop.season_hi}</Badge>
-                </div>
-              </CardHeader>
 
-              <CardContent className="space-y-3 pt-4">
-                <p className="text-xs sm:text-sm text-[#374151] leading-relaxed">
-                  {lang === "hi" ? crop.summary_hi : crop.summary_en}
-                </p>
-
-                <div className="grid grid-cols-2 gap-2 text-xs bg-[#f8faf5] p-3 rounded-lg border border-[#e5e7eb]">
-                  <div>
-                    <span className="text-[#6b7280] block">बुवाई समय:</span>
-                    <span className="font-semibold text-[#14532d]">{crop.sowing}</span>
+                  <div className="text-[11px] text-[#4b5563]">
+                    <span className="font-semibold text-[#14532d]">उपयुक्त क्षेत्र: </span>
+                    {crop.zones.join(", ")}
                   </div>
-                  <div>
-                    <span className="text-[#6b7280] block">फसल अवधि:</span>
-                    <span className="font-semibold text-[#14532d]">{crop.duration}</span>
-                  </div>
-                </div>
-
-                <div className="text-[11px] text-[#4b5563]">
-                  <span className="font-semibold text-[#14532d]">उपयुक्त क्षेत्र: </span>
-                  {crop.zones.join(", ")}
-                </div>
-              </CardContent>
-            </div>
+                </CardContent>
+              </div>
 
             <div className="p-4 bg-[#f8faf5] border-t border-[#e5e7eb] flex flex-col gap-2">
               <SourceBadge sourceName={crop.source} updatedAt={crop.updatedAt} />
@@ -315,7 +336,8 @@ export default function CropsPage() {
               </Link>
             </div>
           </Card>
-        ))}
+        );
+      })}
       </div>
 
       {filteredCrops.length === 0 && (

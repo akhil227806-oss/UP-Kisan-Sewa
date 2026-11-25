@@ -13,7 +13,6 @@ import {
   Clock,
   Search,
   RefreshCw,
-  LogOut,
   MapPin,
   Phone,
   Mail,
@@ -22,10 +21,19 @@ import {
   UserCheck,
   UserX,
   ExternalLink,
+  Download,
+  Activity,
+  Database,
+  Megaphone,
+  BarChart3,
+  Video,
+  CheckCircle2,
+  AlertTriangle,
 } from "lucide-react";
 import { Breadcrumbs } from "@/components/ui/Breadcrumbs";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { AdminNavBar } from "@/components/admin/AdminNavBar";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 
@@ -53,6 +61,16 @@ interface AdminMetrics {
   active_users: number;
   pending_users: number;
   total_admins: number;
+}
+
+interface SystemHealth {
+  status: string;
+  cluster: string;
+  database: string;
+  latency_ms: number;
+  collections: Record<string, number>;
+  engine: string;
+  server_time: string;
 }
 
 const FALLBACK_USERS: UserRecord[] = [
@@ -150,7 +168,7 @@ const FALLBACK_USERS: UserRecord[] = [
 
 export default function AdminDashboardPage() {
   const { lang } = useI18n();
-  const { user: authUser, token: authToken, logout } = useAuth();
+  const { user: authUser, token: authToken } = useAuth();
 
   const [metrics, setMetrics] = useState<AdminMetrics>({
     total_registered_users: 8,
@@ -163,27 +181,48 @@ export default function AdminDashboardPage() {
   });
 
   const [districtBreakdown, setDistrictBreakdown] = useState<Record<string, number>>({
-    Ayodhya: 2,
-    Barabanki: 1,
+    Ayodhya: 3,
+    Barabanki: 2,
     "Ambedkar Nagar": 1,
     Sultanpur: 1,
     Lucknow: 1,
-    Varanasi: 1,
-    Gorakhpur: 1,
+  });
+
+  const [systemHealth, setSystemHealth] = useState<SystemHealth>({
+    status: "healthy",
+    cluster: "upkisanapp.1oqhzzi.mongodb.net",
+    database: "up_kisan_sewa",
+    latency_ms: 28,
+    collections: {
+      users: 9,
+      crops: 5,
+      schemes: 5,
+      videos: 40,
+      questions: 4,
+      mandi_prices: 12,
+    },
+    engine: "Hybrid MongoDB Atlas Cloud + Local Mirror",
+    server_time: new Date().toISOString(),
   });
 
   const [users, setUsers] = useState<UserRecord[]>(FALLBACK_USERS);
   const [loading, setLoading] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDistrict, setFilterDistrict] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedUser, setSelectedUser] = useState<UserRecord | null>(null);
   const [adminName, setAdminName] = useState("Akhil Yadav");
 
+  // Broadcast Alert Widget State
+  const [broadcastText, setBroadcastText] = useState("");
+  const [broadcastSent, setBroadcastSent] = useState(false);
+
   const effectiveToken = useMemo(() => {
     if (typeof window !== "undefined") {
       return (
         localStorage.getItem("admin_token") ||
+        localStorage.getItem("uks_token") ||
         localStorage.getItem("auth_token") ||
         authToken ||
         ""
@@ -200,32 +239,29 @@ export default function AdminDashboardPage() {
         headers["Authorization"] = `Bearer ${effectiveToken}`;
       }
 
-      // Fetch Stats
-      const statsRes = await fetch("/api/v1/admin/dashboard/stats", {
-        headers,
-      });
+      // 1. Fetch Stats
+      const statsRes = await fetch("/api/v1/admin/dashboard/stats", { headers });
       if (statsRes.ok) {
         const statsData = await statsRes.json();
-        if (statsData.metrics) {
-          setMetrics(statsData.metrics);
-        }
-        if (statsData.district_breakdown) {
-          setDistrictBreakdown(statsData.district_breakdown);
-        }
+        if (statsData.metrics) setMetrics(statsData.metrics);
+        if (statsData.district_breakdown) setDistrictBreakdown(statsData.district_breakdown);
       }
 
-      // Fetch User List
-      const usersRes = await fetch("/api/v1/admin/users?limit=100", {
-        headers,
-      });
+      // 2. Fetch User List
+      const usersRes = await fetch("/api/v1/admin/users?limit=100", { headers });
       if (usersRes.ok) {
         const usersData = await usersRes.json();
-        if (usersData.users && usersData.users.length > 0) {
-          setUsers(usersData.users);
-        }
+        if (usersData.users && usersData.users.length > 0) setUsers(usersData.users);
+      }
+
+      // 3. Fetch System Health
+      const healthRes = await fetch("/api/v1/admin/system/health", { headers });
+      if (healthRes.ok) {
+        const hData = await healthRes.json();
+        setSystemHealth(hData);
       }
     } catch {
-      // Graceful fallback to rich local state
+      // Graceful fallback
     } finally {
       setLoading(false);
     }
@@ -238,9 +274,7 @@ export default function AdminDashboardPage() {
         try {
           const parsed = JSON.parse(storedAdmin);
           if (parsed.full_name) setAdminName(parsed.full_name);
-        } catch {
-          // ignore
-        }
+        } catch {}
       } else if (authUser?.full_name) {
         setAdminName(authUser.full_name);
       }
@@ -248,9 +282,57 @@ export default function AdminDashboardPage() {
     fetchAdminData();
   }, [effectiveToken, authUser]);
 
+  const handleExportCSV = async () => {
+    setExporting(true);
+    try {
+      const headers: Record<string, string> = {};
+      if (effectiveToken) headers["Authorization"] = `Bearer ${effectiveToken}`;
+
+      const res = await fetch("/api/v1/admin/export/farmers.csv", { headers });
+      if (res.ok) {
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `UP_Kisan_Sewa_Farmers_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      } else {
+        // Client-side CSV generation fallback
+        const rows = [
+          ["ID", "Full Name", "Phone", "Email", "District", "Tehsil", "Block", "PIN", "Verified", "Status"],
+          ...users.map((u) => [
+            u.id,
+            u.full_name,
+            u.phone,
+            u.email,
+            u.district,
+            u.tehsil || "",
+            u.block || "",
+            u.pincode || "",
+            u.email_verified ? "YES" : "NO",
+            u.status,
+          ]),
+        ];
+        const csvContent = "data:text/csv;charset=utf-8," + rows.map((e) => e.join(",")).join("\n");
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `UP_Kisan_Sewa_Farmers_Export.csv`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
+    } catch (e) {
+      console.warn("Export CSV error:", e);
+    } finally {
+      setExporting(false);
+    }
+  };
+
   const toggleStatus = async (userId: string, currentStatus: string) => {
     const newStatus = currentStatus === "active" ? "inactive" : "active";
-    // Optimistic UI update
     setUsers((prev) =>
       prev.map((u) => (u.id === userId ? { ...u, status: newStatus } : u))
     );
@@ -264,9 +346,7 @@ export default function AdminDashboardPage() {
         },
         body: JSON.stringify({ status: newStatus }),
       });
-    } catch {
-      // Kept optimistic
-    }
+    } catch {}
   };
 
   const filteredUsers = useMemo(() => {
@@ -300,55 +380,65 @@ export default function AdminDashboardPage() {
     return Array.from(set);
   }, [users]);
 
+  const totalDistrictFarmers = useMemo(() => {
+    return Object.values(districtBreakdown).reduce((acc, count) => acc + count, 0) || 1;
+  }, [districtBreakdown]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-8">
       <Breadcrumbs
         items={[{ label: lang === "hi" ? "एडमिन पैनल" : "Admin Dashboard" }]}
       />
 
-      {/* Top Admin Header Bar */}
-      <div className="bg-gradient-to-r from-[#14532d] via-[#15803d] to-[#14532d] text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      {/* Top Admin Header Bar with Executive Action Center */}
+      <div className="bg-gradient-to-r from-[#14532d] via-[#15803d] to-[#14532d] text-white rounded-2xl p-6 shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="bg-[#eab308] text-[#14532d] text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full">
-              {lang === "hi" ? "सुपर एडमिन एक्सेस" : "Super Admin Access"}
+          <div className="flex flex-wrap items-center gap-2 mb-1.5">
+            <span className="bg-[#eab308] text-[#14532d] text-[11px] font-black uppercase px-2.5 py-0.5 rounded-full shadow-xs">
+              {lang === "hi" ? "सुपर एडमिन नियंत्रण कक्ष" : "Executive Super Admin Console"}
             </span>
-            <span className="text-xs text-[#86efac]">
+            <span className="text-xs text-[#86efac] font-medium">
               MCAET, NDUAT Kumarganj, Ayodhya
             </span>
+            <span className="flex items-center gap-1 text-[11px] bg-emerald-900/60 text-emerald-200 px-2 py-0.5 rounded-full border border-emerald-500/30">
+              <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Atlas Connected</span>
+            </span>
           </div>
+
           <h1 className="text-2xl sm:text-3xl font-black">
-            {lang === "hi" ? "अवध किसान सेवा — प्रशासनिक नियंत्रण कक्ष" : "Awadh Kisan Seva — Administrative Console"}
+            {lang === "hi" ? "अवध किसान सेवा — प्रशासनिक नियंत्रण केंद्र" : "Awadh Kisan Seva — Command Center"}
           </h1>
           <p className="text-xs sm:text-sm text-[#bbf7d0] mt-1">
             {lang === "hi"
-              ? `लॉगिन व्यवस्थापक: ${adminName} • सम्पूर्ण उत्तर प्रदेश (75 जनपद) किसान डेटाबेस प्रबंधन`
-              : `Logged in as: ${adminName} • Managing all 75 Uttar Pradesh districts farmer database`}
+              ? `व्यवस्थापक: ${adminName} • सम्पूर्ण उत्तर प्रदेश (75 जनपद) डिजिटल कृषि प्रबंधन`
+              : `Logged in as: ${adminName} • Managing 75 UP districts farmer database`}
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Export to CSV Button */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportCSV}
+            disabled={exporting}
+            className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-xs font-bold shadow-xs cursor-pointer"
+          >
+            <Download className={`size-3.5 ${exporting ? "animate-bounce" : ""}`} />
+            <span>{exporting ? (lang === "hi" ? "डाउनलोड हो रहा है..." : "Exporting...") : (lang === "hi" ? "किसान डेटा एक्सपोर्ट (.CSV)" : "Export Farmers (.CSV)")}</span>
+          </Button>
+
           <Button
             variant="outline"
             size="sm"
             onClick={fetchAdminData}
             disabled={loading}
-            className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-xs"
+            className="bg-white/10 hover:bg-white/20 text-white border-white/30 text-xs cursor-pointer"
           >
             <RefreshCw className={`size-3.5 ${loading ? "animate-spin" : ""}`} />
-            <span>{lang === "hi" ? "डेटा रिफ्रेश करें" : "Refresh Data"}</span>
+            <span>{lang === "hi" ? "डेटा रिफ्रेश" : "Refresh"}</span>
           </Button>
-
-          <Link href="/admin/farmers">
-            <Button
-              variant="accent"
-              size="sm"
-              className="text-xs font-bold text-[#14532d]"
-            >
-              <Users className="size-3.5" />
-              <span>{lang === "hi" ? "किसान अनुमोदन" : "Farmer Approvals"}</span>
-            </Button>
-          </Link>
 
           <Link href="/">
             <Button
@@ -360,6 +450,46 @@ export default function AdminDashboardPage() {
               <span>{lang === "hi" ? "मुख्य पोर्टल देखें" : "View Live Portal"}</span>
             </Button>
           </Link>
+        </div>
+      </div>
+
+      {/* Admin Navigation Tabs */}
+      <AdminNavBar />
+
+      {/* Live System Health & Atlas Diagnostics Card */}
+      <div className="bg-white border border-[#e5e7eb] rounded-2xl p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="size-11 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-200 shrink-0">
+            <Database className="size-6 text-[#15803d]" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-sm sm:text-base text-[#14532d]">
+                {lang === "hi" ? "ऑनलाइन MongoDB Atlas क्लाउड डेटाबेस" : "Online MongoDB Atlas Cloud Cluster"}
+              </h3>
+              <Badge variant="success" size="sm" className="font-mono text-[10px]">
+                {systemHealth.latency_ms} ms ping
+              </Badge>
+            </div>
+            <p className="text-xs text-[#6b7280]">
+              {systemHealth.cluster} • {systemHealth.engine}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <span className="px-2.5 py-1 bg-[#f8faf5] border border-[#e5e7eb] rounded-lg font-bold text-[#14532d]">
+            {systemHealth.collections.videos || 40} {lang === "hi" ? "वीडियो" : "Videos"}
+          </span>
+          <span className="px-2.5 py-1 bg-[#f8faf5] border border-[#e5e7eb] rounded-lg font-bold text-[#14532d]">
+            {systemHealth.collections.crops || 5} {lang === "hi" ? "फसलें" : "Crops"}
+          </span>
+          <span className="px-2.5 py-1 bg-[#f8faf5] border border-[#e5e7eb] rounded-lg font-bold text-[#14532d]">
+            {systemHealth.collections.schemes || 5} {lang === "hi" ? "योजनाएँ" : "Schemes"}
+          </span>
+          <span className="px-2.5 py-1 bg-[#f8faf5] border border-[#e5e7eb] rounded-lg font-bold text-[#14532d]">
+            {systemHealth.collections.questions || 4} {lang === "hi" ? "परामर्श" : "Inquiries"}
+          </span>
         </div>
       </div>
 
@@ -434,38 +564,46 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* District Breakdown & Administrative Modules */}
+      {/* Visual District Analytics & Modules Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* District Distribution Card */}
-        <div className="bg-white border border-[#e5e7eb] rounded-2xl p-5 shadow-xs">
-          <div className="flex items-center justify-between mb-4">
+        {/* District Distribution Progress Meters */}
+        <div className="bg-white border border-[#e5e7eb] rounded-2xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <MapPin className="size-5 text-[#15803d]" />
+              <BarChart3 className="size-5 text-[#15803d]" />
               <h3 className="font-bold text-[#14532d] text-base">
-                {lang === "hi" ? "जनपद-वार किसान वितरण" : "District-wise Farmer Breakdown"}
+                {lang === "hi" ? "जनपद-वार किसान वितरण" : "District-wise Distribution"}
               </h3>
             </div>
-            <span className="text-[11px] text-[#6b7280] bg-[#f8faf5] px-2 py-0.5 rounded border border-[#e5e7eb]">
+            <span className="text-[11px] font-bold text-[#15803d] bg-[#dcfce7] px-2.5 py-0.5 rounded-full border border-[#86efac]">
               {Object.keys(districtBreakdown).length} {lang === "hi" ? "जनपद" : "Districts"}
             </span>
           </div>
 
-          <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
-            {Object.entries(districtBreakdown).map(([dist, count]) => (
-              <div
-                key={dist}
-                className="flex items-center justify-between p-2.5 bg-[#f8faf5] rounded-xl border border-[#e5e7eb] text-xs hover:border-[#15803d] transition-colors"
-              >
-                <span className="font-bold text-[#374151]">{dist}</span>
-                <span className="font-black text-[#14532d] bg-[#dcfce7] px-2.5 py-0.5 rounded-full border border-[#86efac]">
-                  {count} {lang === "hi" ? "किसान" : "Farmers"}
-                </span>
-              </div>
-            ))}
+          <div className="space-y-3">
+            {Object.entries(districtBreakdown).map(([dist, count]) => {
+              const pct = Math.round((count / totalDistrictFarmers) * 100);
+              return (
+                <div key={dist} className="space-y-1 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-[#374151]">{dist}</span>
+                    <span className="font-black text-[#14532d]">
+                      {count} ({pct}%)
+                    </span>
+                  </div>
+                  <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#15803d] to-[#86efac] rounded-full transition-all duration-500"
+                      style={{ width: `${Math.max(pct, 12)}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Quick Admin Modules */}
+        {/* Quick Admin Modules Grid */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Link
             href="/admin/farmers"
@@ -480,8 +618,8 @@ export default function AdminDashboardPage() {
               </h3>
               <p className="text-xs text-[#6b7280] mt-1">
                 {lang === "hi"
-                  ? "नये पंजीकृत किसानों के दस्तावेजों का सत्यापन एवं खाता सक्रियता नियंत्रण"
-                  : "Review newly registered farmers, verify identities and activate accounts"}
+                  ? "नये पंजीकृत किसानों के विवरणों का सत्यापन एवं खाता सक्रियता नियंत्रण"
+                  : "Review newly registered farmers, verify KYC details, and activate accounts"}
               </p>
             </div>
             <div className="pt-3 mt-3 border-t border-[#f3f4f6] text-xs font-bold text-[#15803d] flex items-center gap-1">
@@ -495,16 +633,16 @@ export default function AdminDashboardPage() {
             className="p-5 bg-white border border-[#e5e7eb] rounded-2xl hover:border-[#15803d] transition-all group shadow-xs flex flex-col justify-between"
           >
             <div>
-              <div className="size-10 bg-[#f0fdf4] text-[#14532d] rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+              <div className="size-10 bg-[#f0fdf4] text-[#15803d] rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                 <Sprout className="size-6" />
               </div>
               <h3 className="font-bold text-[#14532d] text-base">
-                {lang === "hi" ? "फसल व रोग संस्तुतियाँ" : "Crops & Disease Advisory"}
+                {lang === "hi" ? "फसल व अनुमोदित किस्में" : "Crops & Variety Catalog"}
               </h3>
               <p className="text-xs text-[#6b7280] mt-1">
                 {lang === "hi"
-                  ? "खरीफ, रबी, जायद फसल पैकेज एवं कीट नियंत्रण संस्तुतियों का अद्यतनीकरण"
-                  : "Update scientific packages of practices, certified varieties, and disease controls"}
+                  ? "खरीफ, रबी, जायद फसल पैकेज एवं बीज दर संस्तुतियों का प्रबंधन"
+                  : "Update scientific packages of practices, certified varieties, and MSP rates"}
               </p>
             </div>
             <div className="pt-3 mt-3 border-t border-[#f3f4f6] text-xs font-bold text-[#15803d] flex items-center gap-1">
@@ -537,24 +675,24 @@ export default function AdminDashboardPage() {
           </Link>
 
           <Link
-            href="/admin/questions"
-            className="p-5 bg-white border border-[#e5e7eb] rounded-2xl hover:border-[#d97706] transition-all group shadow-xs flex flex-col justify-between"
+            href="/admin/videos"
+            className="p-5 bg-white border border-[#e5e7eb] rounded-2xl hover:border-[#dc2626] transition-all group shadow-xs flex flex-col justify-between"
           >
             <div>
-              <div className="size-10 bg-amber-50 text-amber-700 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                <HelpCircle className="size-6" />
+              <div className="size-10 bg-red-50 text-red-700 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <Video className="size-6" />
               </div>
               <h3 className="font-bold text-[#14532d] text-base">
-                {lang === "hi" ? "वैज्ञानिक परामर्श नियंत्रण" : "Expert Consultation Queue"}
+                {lang === "hi" ? "कृषि प्रशिक्षण वीडियो (40)" : "Training Video Library (40)"}
               </h3>
               <p className="text-xs text-[#6b7280] mt-1">
                 {lang === "hi"
-                  ? "किसानों द्वारा पूछे गए प्रश्नों को विषय विशेषज्ञों को आवंटित करें"
-                  : "Assign farmer questions to NDUAT agronomists and review answered queries"}
+                  ? "4 श्रेणियों में 40 आधिकारिक वीडियो, यूट्यूब आईडी, स्रोत व थंबनेल प्रबंधन"
+                  : "Manage 40 official YouTube agriculture videos across 4 major disciplines"}
               </p>
             </div>
-            <div className="pt-3 mt-3 border-t border-[#f3f4f6] text-xs font-bold text-amber-700 flex items-center gap-1">
-              <span>{lang === "hi" ? "प्रबंधन करें" : "Manage Inquiries"}</span>
+            <div className="pt-3 mt-3 border-t border-[#f3f4f6] text-xs font-bold text-red-700 flex items-center gap-1">
+              <span>{lang === "hi" ? "प्रबंधन करें" : "Manage Videos"}</span>
               <ChevronRight className="size-3.5 group-hover:translate-x-1 transition-transform" />
             </div>
           </Link>
@@ -566,7 +704,7 @@ export default function AdminDashboardPage() {
         <div className="p-5 border-b border-[#e5e7eb] flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-black text-[#14532d]">
-              {lang === "hi" ? "पंजीकृत उपयोगकर्ता एवं किसान निर्देशिका" : "Registered Users & Farmers Directory"}
+              {lang === "hi" ? "पंजीकृत किसान एवं उपयोगकर्ता निर्देशिका" : "Registered Farmers & Users Directory"}
             </h2>
             <p className="text-xs text-[#6b7280]">
               {lang === "hi"
@@ -623,11 +761,11 @@ export default function AdminDashboardPage() {
               <tr className="bg-[#f8faf5] text-[#14532d] font-bold border-b border-[#e5e7eb]">
                 <th className="p-3.5">{lang === "hi" ? "किसान / उपयोगकर्ता" : "Farmer / User"}</th>
                 <th className="p-3.5">{lang === "hi" ? "संपर्क सूत्र" : "Contact"}</th>
-                <th className="p-3.5">{lang === "hi" ? "स्थान" : "Administrative Address"}</th>
+                <th className="p-3.5">{lang === "hi" ? "स्थान विवरण" : "Location"}</th>
                 <th className="p-3.5">{lang === "hi" ? "भूमिका" : "Role"}</th>
                 <th className="p-3.5">{lang === "hi" ? "सत्यापन स्थिति" : "Verification"}</th>
-                <th className="p-3.5">{lang === "hi" ? "खाता स्थिति" : "Account Status"}</th>
-                <th className="p-3.5 text-center">{lang === "hi" ? "कार्रवाई" : "Action"}</th>
+                <th className="p-3.5">{lang === "hi" ? "खाता स्थिति" : "Status"}</th>
+                <th className="p-3.5 text-center">{lang === "hi" ? "कार्रवाई" : "Actions"}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#e5e7eb]">
@@ -636,7 +774,7 @@ export default function AdminDashboardPage() {
                   <td className="p-3.5">
                     <div className="font-bold text-[#14532d] text-sm">{u.full_name || "—"}</div>
                     <span className="text-[10px] text-[#6b7280]">
-                      ID: {u.id?.slice(0, 10)}...
+                      ID: #{u.id?.slice(0, 10)}
                     </span>
                   </td>
 
@@ -715,12 +853,12 @@ export default function AdminDashboardPage() {
                         {u.status === "active" ? (
                           <>
                             <UserX className="size-3" />
-                            <span>निष्क्रिय</span>
+                            <span>{lang === "hi" ? "निष्क्रिय" : "Deactivate"}</span>
                           </>
                         ) : (
                           <>
                             <UserCheck className="size-3" />
-                            <span>सक्रिय करें</span>
+                            <span>{lang === "hi" ? "सक्रिय करें" : "Activate"}</span>
                           </>
                         )}
                       </Button>
@@ -729,9 +867,9 @@ export default function AdminDashboardPage() {
                         variant="outline"
                         size="sm"
                         onClick={() => setSelectedUser(u)}
-                        className="text-[11px] py-1 px-2"
+                        className="text-[11px] py-1 px-2.5"
                       >
-                        विवरण
+                        {lang === "hi" ? "केवाईसी देखें" : "View KYC"}
                       </Button>
                     </div>
                   </td>
@@ -742,43 +880,50 @@ export default function AdminDashboardPage() {
 
           {filteredUsers.length === 0 && (
             <div className="p-8 text-center text-xs text-[#6b7280]">
-              {lang === "hi" ? "कोई मेल खाता उपयोगकर्ता नहीं मिला" : "No matching users found"}
+              {lang === "hi" ? "कोई मेल खाता किसान नहीं मिला" : "No matching farmers found"}
             </div>
           )}
         </div>
       </div>
 
-      {/* User Detail Modal */}
+      {/* Farmer Detailed KYC Inspection Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-[#e5e7eb] space-y-4">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-[#e5e7eb] space-y-4">
             <div className="flex items-center justify-between border-b border-[#e5e7eb] pb-3">
-              <div className="flex items-center gap-2">
-                <div className="size-8 bg-[#dcfce7] text-[#15803d] rounded-lg flex items-center justify-center font-bold">
+              <div className="flex items-center gap-2.5">
+                <div className="size-10 bg-[#dcfce7] text-[#15803d] rounded-xl flex items-center justify-center font-black text-base">
                   {selectedUser.full_name?.charAt(0) || "U"}
                 </div>
                 <div>
                   <h3 className="font-bold text-[#14532d] text-base">{selectedUser.full_name}</h3>
-                  <span className="text-[11px] text-[#6b7280]">{selectedUser.role}</span>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <Badge variant="success" size="sm">
+                      {selectedUser.role}
+                    </Badge>
+                    <span className="text-[11px] text-[#6b7280] font-mono">
+                      #{selectedUser.id}
+                    </span>
+                  </div>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedUser(null)}
-                className="text-[#6b7280] hover:text-[#111827] text-lg font-bold"
+                className="size-8 rounded-lg hover:bg-gray-100 flex items-center justify-center text-[#6b7280] hover:text-[#111827] text-base font-bold cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-3 p-3 bg-[#f8faf5] rounded-xl border border-[#e5e7eb]">
+              <div className="grid grid-cols-2 gap-3 p-3.5 bg-[#f8faf5] rounded-xl border border-[#e5e7eb]">
                 <div>
                   <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "ईमेल:" : "Email:"}</span>
-                  <span className="font-semibold text-[#14532d]">{selectedUser.email}</span>
+                  <span className="font-semibold text-[#14532d] break-all">{selectedUser.email}</span>
                 </div>
                 <div>
                   <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "मोबाइल:" : "Mobile:"}</span>
-                  <span className="font-semibold text-[#14532d]">{selectedUser.phone}</span>
+                  <span className="font-semibold text-[#14532d] font-mono">{selectedUser.phone}</span>
                 </div>
                 <div>
                   <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "जनपद:" : "District:"}</span>
@@ -793,19 +938,19 @@ export default function AdminDashboardPage() {
                   <span className="font-semibold text-[#14532d]">{selectedUser.block || "—"}</span>
                 </div>
                 <div>
-                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "गाँव:" : "Village:"}</span>
+                  <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "गाँव / वार्ड:" : "Village:"}</span>
                   <span className="font-semibold text-[#14532d]">{selectedUser.village || "—"}</span>
                 </div>
                 <div>
                   <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "पिन कोड:" : "PIN Code:"}</span>
-                  <span className="font-semibold text-[#14532d]">{selectedUser.pincode || "—"}</span>
+                  <span className="font-semibold text-[#14532d] font-mono">{selectedUser.pincode || "—"}</span>
                 </div>
                 <div>
                   <span className="text-[#6b7280] block text-[10px]">{lang === "hi" ? "ईमेल सत्यापन:" : "Email Verified:"}</span>
                   <span className="font-semibold text-[#14532d]">
                     {selectedUser.email_verified
-                      ? (lang === "hi" ? "सत्यापित" : "Yes")
-                      : (lang === "hi" ? "लंबित" : "No")}
+                      ? (lang === "hi" ? "✓ हाँ (OTP सत्यापित)" : "✓ Verified via OTP")
+                      : (lang === "hi" ? "लंबित" : "Pending OTP")}
                   </span>
                 </div>
               </div>
@@ -816,9 +961,25 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[#e5e7eb] flex justify-end gap-2">
+            <div className="pt-3 border-t border-[#e5e7eb] flex items-center justify-between gap-2">
+              <Button
+                variant={selectedUser.status === "active" ? "danger" : "primary"}
+                size="sm"
+                onClick={() => {
+                  toggleStatus(selectedUser.id, selectedUser.status);
+                  setSelectedUser({
+                    ...selectedUser,
+                    status: selectedUser.status === "active" ? "inactive" : "active",
+                  });
+                }}
+              >
+                {selectedUser.status === "active"
+                  ? (lang === "hi" ? "खाता निलंबित करें" : "Suspend Account")
+                  : (lang === "hi" ? "खाता स्वीकृत करें" : "Approve Account")}
+              </Button>
+
               <Button variant="outline" size="sm" onClick={() => setSelectedUser(null)}>
-                बंद करें
+                {lang === "hi" ? "बंद करें" : "Close"}
               </Button>
             </div>
           </div>

@@ -39,6 +39,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const logout = useCallback(() => {
     localStorage.removeItem("uks_token");
     localStorage.removeItem("uks_user");
+    localStorage.removeItem("admin_token");
+    localStorage.removeItem("admin_user");
+    localStorage.removeItem("auth_token");
     setToken(null);
     setUser(null);
     try {
@@ -51,12 +54,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback((jwtToken: string, userData: User) => {
     localStorage.setItem("uks_token", jwtToken);
     localStorage.setItem("uks_user", JSON.stringify(userData));
+    localStorage.setItem("admin_token", jwtToken);
+    localStorage.setItem("admin_user", JSON.stringify(userData));
     setToken(jwtToken);
     setUser(userData);
   }, []);
 
   const refreshUser = useCallback(async () => {
-    const savedToken = localStorage.getItem("uks_token");
+    const savedToken =
+      localStorage.getItem("uks_token") ||
+      localStorage.getItem("admin_token") ||
+      localStorage.getItem("auth_token");
     if (!savedToken) {
       setUser(null);
       setLoading(false);
@@ -75,11 +83,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(data);
         localStorage.setItem("uks_user", JSON.stringify(data));
       } else if (res.status === 401) {
-        logout();
+        // Fallback to local user if present, otherwise logout
+        const savedUser = localStorage.getItem("uks_user") || localStorage.getItem("admin_user");
+        if (!savedUser) {
+          logout();
+        }
       }
     } catch (err) {
       // If backend is momentarily unreachable, retain saved cached user
-      const savedUser = localStorage.getItem("uks_user");
+      const savedUser = localStorage.getItem("uks_user") || localStorage.getItem("admin_user");
       if (savedUser) {
         try {
           setUser(JSON.parse(savedUser));
@@ -93,8 +105,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [logout]);
 
   useEffect(() => {
-    const savedToken = localStorage.getItem("uks_token");
-    const savedUser = localStorage.getItem("uks_user");
+    const savedToken =
+      localStorage.getItem("uks_token") ||
+      localStorage.getItem("admin_token") ||
+      localStorage.getItem("auth_token");
+    const savedUser =
+      localStorage.getItem("uks_user") ||
+      localStorage.getItem("admin_user");
     if (savedToken && savedUser) {
       try {
         setToken(savedToken);

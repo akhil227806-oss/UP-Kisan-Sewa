@@ -1,19 +1,28 @@
-"""Resilient High-Performance MongoDB Database Engine with Persistent Fallback.
-Provides unified Async MongoDB-compatible interface supporting Atlas and local persistence.
+"""Resilient Hybrid MongoDB Engine for Awadh Kisan Sewa.
+Connects directly to Online MongoDB Atlas with automatic fallback and local backup persistence.
 """
 
 import asyncio
 import json
-import os
 import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 from bson import ObjectId
+from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
+import certifi
 
 from app.core.config import settings
 
 LOCAL_DB_FILE = Path(__file__).parent / "local_storage.json"
+
+
+def _json_serial(obj: Any):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    if isinstance(obj, ObjectId):
+        return str(obj)
+    return str(obj)
 
 
 class LocalCollectionCursor:
@@ -75,14 +84,6 @@ class LocalCollectionCursor:
         return items
 
 
-def _json_serial(obj: Any):
-    if isinstance(obj, datetime):
-        return obj.isoformat()
-    if isinstance(obj, ObjectId):
-        return str(obj)
-    return str(obj)
-
-
 class LocalCollection:
     def __init__(self, db_store: dict[str, list[dict[str, Any]]], name: str, save_fn: Any):
         self._store = db_store
@@ -98,90 +99,82 @@ class LocalCollection:
         for k, v in query.items():
             if k == "$or":
                 sub_queries = v
-                if not any(self._match(doc, sq) for sq in sub_queries):
+                if not any(all(doc.get(sk) == sv for sk, sv in sq.items()) for sq in sub_queries):
                     return False
-            elif isinstance(v, dict):
-                val = doc.get(k)
-                if "$regex" in v:
-                    pattern = v["$regex"]
-                    options = v.get("$options", "")
-                    flags = re.IGNORECASE if "i" in options else 0
-                    if not re.search(pattern, str(val or ""), flags):
-                        return False
-                if "$in" in v:
-                    allowed = v["$in"]
-                    if val not in allowed:
-                        return False
-            else:
-                if str(doc.get(k, "")) != str(v):
+                continue
+            if k == "_id":
+                if str(doc.get("_id", "")) != str(v):
                     return False
+                continue
+            val = doc.get(k)
+            if isinstance(v, dict):
+                for op, op_val in v.items():
+                    if op == "$in" and val not in op_val:
+                        return False
+                    if op == "$ne" and val == op_val:
+                        return False
+                    if op == "$regex":
+                        pattern = re.compile(op_val, re.IGNORECASE)
+                        if not pattern.search(str(val or "")):
+                            return False
+                continue
+            if val != v:
+                return False
         return True
 
-    async def find_one(self, query: dict[str, Any], projection: dict[str, Any] | None = None) -> dict[str, Any] | None:
+    async def find_one(self, query: dict[str, Any] | None = None, *args, **kwargs) -> dict[str, Any] | None:
+        q = query or {}
         for d in self._docs():
-            if self._match(d, query):
-                res = dict(d)
-                if projection:
-                    for k, v in projection.items():
-                        if v == 0:
-                            res.pop(k, None)
-                return res
+            if self._match(d, q):
+                return dict(d)
         return None
 
-    def find(self, query: dict[str, Any] | None = None, projection: dict[str, Any] | None = None) -> LocalCollectionCursor:
+    def find(self, query: dict[str, Any] | None = None, *args, **kwargs) -> LocalCollectionCursor:
         q = query or {}
         matches = [dict(d) for d in self._docs() if self._match(d, q)]
-        if projection:
-            for d in matches:
-                for k, v in projection.items():
-                    if v == 0:
-                        d.pop(k, None)
         return LocalCollectionCursor(matches)
 
     async def insert_one(self, doc: dict[str, Any]) -> Any:
-        to_save = dict(doc)
-        if "_id" not in to_save:
-            to_save["_id"] = str(ObjectId())
-        elif isinstance(to_save["_id"], ObjectId):
-            to_save["_id"] = str(to_save["_id"])
-        self._docs().append(to_save)
+        d = dict(doc)
+        if "_id" not in d:
+            d["_id"] = str(ObjectId())
+        self._store[self._name].append(d)
         self._save()
         class InsertResult:
-            inserted_id = to_save["_id"]
+            inserted_id = d["_id"]
         return InsertResult()
 
     async def update_one(self, query: dict[str, Any], update: dict[str, Any], upsert: bool = False) -> Any:
+        matched = 0
+        modified = 0
         for d in self._docs():
             if self._match(d, query):
+                matched = 1
                 if "$set" in update:
-                    d.update(update["$set"])
-                if "$inc" in update:
-                    for ik, iv in update["$inc"].items():
-                        d[ik] = d.get(ik, 0) + iv
+                    for k, v in update["$set"].items():
+                        d[k] = v
+                    modified = 1
                 self._save()
-                class UpdateResult:
-                    matched_count = 1
-                    modified_count = 1
-                return UpdateResult()
-        if upsert:
+                break
+        if matched == 0 and upsert:
             new_doc = dict(query)
             if "$set" in update:
                 new_doc.update(update["$set"])
-            await self.insert_one(new_doc)
-            class UpsertResult:
-                matched_count = 0
-                modified_count = 1
-            return UpsertResult()
-        class EmptyResult:
-            matched_count = 0
-            modified_count = 0
-        return EmptyResult()
+            if "_id" not in new_doc:
+                new_doc["_id"] = str(ObjectId())
+            self._store[self._name].append(new_doc)
+            self._save()
+            modified = 1
+        class UpdateResult:
+            matched_count = matched
+            modified_count = modified
+        return UpdateResult()
 
     async def delete_one(self, query: dict[str, Any]) -> Any:
         docs = self._docs()
-        for i, d in enumerate(docs):
+        for idx, d in enumerate(docs):
             if self._match(d, query):
-                docs.pop(i)
+                del docs[idx]
                 self._save()
                 class DeleteResult:
                     deleted_count = 1
@@ -238,14 +231,151 @@ class LocalDatabase:
         return self[name]
 
 
-# Local persistent database is always active and instant
-_db = LocalDatabase()
+# Initialize Local Persistence
+_local_db = LocalDatabase()
+
+# Initialize Online MongoDB Atlas Engine
+_atlas_client: AsyncIOMotorClient | None = None
+_atlas_db: AsyncIOMotorDatabase | None = None
 
 
-def get_db() -> LocalDatabase:
-    """Return persistent local database."""
-    return _db
+def _get_atlas_db() -> AsyncIOMotorDatabase | None:
+    global _atlas_client, _atlas_db
+    if _atlas_db is not None:
+        return _atlas_db
+
+    uri = settings.mongodb_uri
+    if not uri or "mongodb" not in uri:
+        return None
+
+    try:
+        _atlas_client = AsyncIOMotorClient(
+            uri,
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=5000,
+            tlsCAFile=certifi.where(),
+        )
+        _atlas_db = _atlas_client[settings.mongodb_db]
+        return _atlas_db
+    except Exception as e:
+        print(f"[warn] MongoDB Atlas connection init failed: {e}")
+        return None
+
+
+class ResilientCollection:
+    """Delegates to Online MongoDB Atlas with seamless local persistence and fallback."""
+
+    def __init__(self, name: str):
+        self._name = name
+        self._local = _local_db[name]
+
+    @property
+    def _atlas(self):
+        db = _get_atlas_db()
+        return db[self._name] if db is not None else None
+
+    async def find_one(self, *args, **kwargs):
+        atlas = self._atlas
+        if atlas is not None:
+            try:
+                res = await atlas.find_one(*args, **kwargs)
+                if res is not None:
+                    return res
+            except Exception as e:
+                print(f"[warn] Atlas find_one fallback for {self._name}: {e}")
+        return await self._local.find_one(*args, **kwargs)
+
+    def find(self, *args, **kwargs):
+        atlas = self._atlas
+        if atlas is not None:
+            try:
+                return atlas.find(*args, **kwargs)
+            except Exception as e:
+                print(f"[warn] Atlas find fallback for {self._name}: {e}")
+        return self._local.find(*args, **kwargs)
+
+    async def insert_one(self, doc: dict[str, Any], *args, **kwargs):
+        atlas = self._atlas
+        local_res = await self._local.insert_one(doc)
+        if atlas is not None:
+            try:
+                clean_doc = dict(doc)
+                if "_id" in clean_doc and isinstance(clean_doc["_id"], str) and len(clean_doc["_id"]) != 24:
+                    del clean_doc["_id"]
+                atlas_res = await atlas.insert_one(clean_doc, *args, **kwargs)
+                return atlas_res
+            except Exception as e:
+                print(f"[warn] Atlas insert_one fallback for {self._name}: {e}")
+        return local_res
+
+    async def update_one(self, query: dict[str, Any], update: dict[str, Any], *args, **kwargs):
+        atlas = self._atlas
+        local_res = await self._local.update_one(query, update, *args, **kwargs)
+        if atlas is not None:
+            try:
+                atlas_res = await atlas.update_one(query, update, *args, **kwargs)
+                return atlas_res
+            except Exception as e:
+                print(f"[warn] Atlas update_one fallback for {self._name}: {e}")
+        return local_res
+
+    async def delete_one(self, query: dict[str, Any], *args, **kwargs):
+        atlas = self._atlas
+        local_res = await self._local.delete_one(query)
+        if atlas is not None:
+            try:
+                return await atlas.delete_one(query, *args, **kwargs)
+            except Exception as e:
+                print(f"[warn] Atlas delete_one fallback for {self._name}: {e}")
+        return local_res
+
+    async def delete_many(self, query: dict[str, Any], *args, **kwargs):
+        atlas = self._atlas
+        local_res = await self._local.delete_many(query)
+        if atlas is not None:
+            try:
+                return await atlas.delete_many(query, *args, **kwargs)
+            except Exception as e:
+                print(f"[warn] Atlas delete_many fallback for {self._name}: {e}")
+        return local_res
+
+    async def count_documents(self, *args, **kwargs):
+        atlas = self._atlas
+        if atlas is not None:
+            try:
+                return await atlas.count_documents(*args, **kwargs)
+            except Exception as e:
+                print(f"[warn] Atlas count_documents fallback for {self._name}: {e}")
+        return await self._local.count_documents(*args, **kwargs)
+
+    async def create_index(self, *args, **kwargs):
+        atlas = self._atlas
+        if atlas is not None:
+            try:
+                return await atlas.create_index(*args, **kwargs)
+            except Exception:
+                pass
+
+
+class ResilientDatabase:
+    def __getitem__(self, name: str) -> ResilientCollection:
+        return ResilientCollection(name)
+
+    def __getattr__(self, name: str) -> ResilientCollection:
+        return self[name]
+
+
+_engine = ResilientDatabase()
+
+
+def get_db() -> ResilientDatabase:
+    """Return unified online MongoDB database with auto-fallback."""
+    return _engine
 
 
 async def close_mongo() -> None:
-    pass
+    global _atlas_client, _atlas_db
+    if _atlas_client is not None:
+        _atlas_client.close()
+        _atlas_client = None
+        _atlas_db = None

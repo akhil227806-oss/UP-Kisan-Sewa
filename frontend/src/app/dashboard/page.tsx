@@ -30,13 +30,74 @@ import { useAuth } from "@/lib/auth";
 
 export default function FarmerDashboard() {
   const { lang, t } = useI18n();
-  const { user, loading: authLoading, logout, refreshUser } = useAuth();
+  const { user, loading: authLoading, logout, refreshUser, token } = useAuth();
 
   const [activeTab, setActiveTab] = useState<"overview" | "crops" | "consultations" | "profile">("overview");
+
+  const [myCrops, setMyCrops] = useState<any[]>([
+    { name: "गेहूँ (डीबीडब्ल्यू 187)", area: "2.5 एकड़", sowingDate: "20 नवम्बर 2025", stage: "दाना पकने की अवस्था", slug: "gehu-sample" },
+    { name: "सरसों (एनडीआर 8501)", area: "1.0 एकड़", sowingDate: "10 अक्टूबर 2025", stage: "कटाई योग्य", slug: "sarson-sample" },
+  ]);
+
+  const [myConsultations, setMyConsultations] = useState<any[]>([
+    {
+      id: "UKS-894",
+      crop: "गेहूँ",
+      question: "पत्तियों पर पीली धारियां दिखाई दे रही हैं, क्या यह पीला रतुआ है?",
+      status: "समाधान प्राप्त",
+      expert: "डॉ. नीरज कुमार सिंह (सस्य वैज्ञानिक, MCAET)",
+      date: "18 मार्च 2026",
+    },
+  ]);
 
   useEffect(() => {
     refreshUser();
   }, [refreshUser]);
+
+  useEffect(() => {
+    if (!user) return;
+    const effectiveToken = token || localStorage.getItem("uks_token") || localStorage.getItem("admin_token") || "";
+
+    // 1. Fetch Farmer's registered crops
+    fetch("/api/v1/farmers/me/crops", {
+      headers: effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {},
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setMyCrops(data);
+        } else {
+          const localCrops = localStorage.getItem("my_farmer_crops");
+          if (localCrops) {
+            try {
+              const parsed = JSON.parse(localCrops);
+              if (Array.isArray(parsed) && parsed.length > 0) setMyCrops(parsed);
+            } catch (e) {}
+          }
+        }
+      })
+      .catch(() => {});
+
+    // 2. Fetch Farmer's expert questions
+    const emailQuery = user.email ? `?email=${encodeURIComponent(user.email)}` : "";
+    fetch(`/api/v1/questions${emailQuery}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped = data.map((q: any) => ({
+            id: q.id || q.question_id || "UKS-Q",
+            crop: q.crop || "सामान्य",
+            question: q.question || q.question_text || "",
+            status: q.status === "answered" ? (lang === "hi" ? "समाधान प्राप्त" : "Answered") : (lang === "hi" ? "प्रतीक्षारत" : "Pending Review"),
+            expert: q.answered_by || (lang === "hi" ? "NDUAT कृषि वैज्ञानिक" : "NDUAT Expert"),
+            date: q.created_at ? new Date(q.created_at).toLocaleDateString("hi-IN") : "2026-03-20",
+            answer: q.answer || q.answer_text,
+          }));
+          setMyConsultations(mapped);
+        }
+      })
+      .catch(() => {});
+  }, [user, token, lang]);
 
   if (authLoading) {
     return (
@@ -49,7 +110,6 @@ export default function FarmerDashboard() {
     );
   }
 
-  // Not Logged In State
   if (!user) {
     return (
       <div className="max-w-md mx-auto px-4 py-16 text-center">
@@ -81,23 +141,6 @@ export default function FarmerDashboard() {
       </div>
     );
   }
-
-  // Sample Registered Crops
-  const myCrops = [
-    { name: "गेहूँ (डीबीडब्ल्यू 187)", area: "2.5 एकड़", sowingDate: "20 नवम्बर 2025", stage: "दाना पकने की अवस्था" },
-    { name: "सरसों (एनडीआर 8501)", area: "1.0 एकड़", sowingDate: "10 अक्टूबर 2025", stage: "कटाई योग्य" },
-  ];
-
-  const myConsultations = [
-    {
-      id: "UKS-894",
-      crop: "गेहूँ",
-      question: "पत्तियों पर पीली धारियां दिखाई दे रही हैं, क्या यह पीला रतुआ है?",
-      status: "समाधान प्राप्त (Answered)",
-      expert: "डॉ. वी. के. सिंह (सस्य वैज्ञानिक, NDUAT)",
-      date: "18 मार्च 2026",
-    },
-  ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 space-y-6">
@@ -157,6 +200,38 @@ export default function FarmerDashboard() {
             <span>{lang === "hi" ? "लॉगआउट" : "Sign Out"}</span>
           </button>
         </div>
+      </div>
+
+      {/* Farmer Dashboard Navigation Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-1 border-b border-[#e5e7eb]">
+        <Link
+          href="/dashboard"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#15803d] text-white shadow-xs"
+        >
+          <TrendingUp className="size-4" />
+          <span>{lang === "hi" ? "डैशबोर्ड अवलोकन" : "Overview"}</span>
+        </Link>
+        <Link
+          href="/dashboard/crops"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-[#4b5563] hover:text-[#14532d] hover:bg-[#f0fdf4] transition-colors"
+        >
+          <Sprout className="size-4 text-[#15803d]" />
+          <span>{lang === "hi" ? "मेरी फसलें प्रबंधित करें" : "My Crops"}</span>
+        </Link>
+        <Link
+          href="/ask-expert"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-[#4b5563] hover:text-[#14532d] hover:bg-[#f0fdf4] transition-colors"
+        >
+          <HelpCircle className="size-4 text-[#0284c7]" />
+          <span>{lang === "hi" ? "विशेषज्ञ परामर्श" : "Consultations"}</span>
+        </Link>
+        <Link
+          href="/dashboard/profile"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-[#4b5563] hover:text-[#14532d] hover:bg-[#f0fdf4] transition-colors"
+        >
+          <User className="size-4 text-[#6b7280]" />
+          <span>{lang === "hi" ? "मेरी प्रोफ़ाइल" : "Farmer Profile"}</span>
+        </Link>
       </div>
 
       {/* Grid: Profile Details Card + Quick Actions */}
@@ -291,8 +366,8 @@ export default function FarmerDashboard() {
                 <Sprout className="size-5 text-[#15803d]" />
                 <span>{lang === "hi" ? "मेरी पंजीकृत फसलें" : "My Crops"}</span>
               </h3>
-              <Link href="/crops">
-                <Button variant="outline" size="sm">
+              <Link href="/dashboard/crops">
+                <Button variant="primary" size="sm">
                   <PlusCircle className="size-3.5" />
                   <span>{lang === "hi" ? "नई फसल जोड़ें" : "Add Crop"}</span>
                 </Button>
@@ -300,27 +375,46 @@ export default function FarmerDashboard() {
             </div>
 
             <div className="space-y-3">
-              {myCrops.map((crop, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 bg-[#f8faf5] border border-[#e5e7eb] rounded-xl flex flex-wrap items-center justify-between gap-4"
-                >
-                  <div>
-                    <h4 className="font-extrabold text-[#14532d] text-sm">{crop.name}</h4>
-                    <p className="text-xs text-[#6b7280] mt-0.5">
-                      क्षेत्रफल: {crop.area} • बुवाई तिथि: {crop.sowingDate}
-                    </p>
+              {myCrops.map((crop, idx) => {
+                const cropImg = crop.name.includes("सरसों") || (crop.name || "").toLowerCase().includes("mustard")
+                  ? "/crops/mustard.jpg"
+                  : crop.name.includes("धान") || (crop.name || "").toLowerCase().includes("paddy")
+                  ? "/crops/paddy.jpg"
+                  : crop.name.includes("गन्ना") || (crop.name || "").toLowerCase().includes("sugarcane")
+                  ? "/crops/sugarcane.jpg"
+                  : crop.name.includes("अरहर") || (crop.name || "").toLowerCase().includes("arhar")
+                  ? "/crops/arhar.jpg"
+                  : "/crops/wheat.jpg";
+
+                return (
+                  <div
+                    key={idx}
+                    className="p-3.5 bg-[#f8faf5] border border-[#e5e7eb] rounded-xl flex items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={cropImg}
+                        alt={crop.name}
+                        className="size-14 rounded-lg object-cover border border-[#e5e7eb] shrink-0"
+                      />
+                      <div>
+                        <h4 className="font-extrabold text-[#14532d] text-sm">{crop.name}</h4>
+                        <p className="text-xs text-[#6b7280] mt-0.5">
+                          {lang === "hi" ? "क्षेत्रफल:" : "Area:"} {crop.area} • {lang === "hi" ? "बुवाई तिथि:" : "Sowing:"} {crop.sowingDate}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-xs font-semibold bg-[#dcfce7] text-[#14532d] px-2.5 py-1 rounded-full border border-[#86efac]">
+                        {crop.stage}
+                      </span>
+                      <Link href={`/crops/${crop.slug || "gehu-sample"}`} className="text-xs font-bold text-[#15803d] hover:underline">
+                        {lang === "hi" ? "पैकेज देखें →" : "View Package →"}
+                      </Link>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-xs font-semibold bg-[#dcfce7] text-[#14532d] px-2.5 py-1 rounded-full border border-[#86efac]">
-                      {crop.stage}
-                    </span>
-                    <Link href="/crops" className="text-xs font-bold text-[#15803d] hover:underline">
-                      पैकेज देखें →
-                    </Link>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -342,14 +436,16 @@ export default function FarmerDashboard() {
               {myConsultations.map((item) => (
                 <div key={item.id} className="p-4 bg-[#f8faf5] border border-[#e5e7eb] rounded-xl space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-[#15803d]">प्रश्न सं.: #{item.id}</span>
+                    <span className="text-xs font-bold text-[#15803d]">
+                      {lang === "hi" ? "प्रश्न सं.: #" : "Ref ID: #"}{item.id}
+                    </span>
                     <span className="text-[11px] font-semibold bg-[#dcfce7] text-[#14532d] px-2 py-0.5 rounded-full">
                       {item.status}
                     </span>
                   </div>
                   <p className="text-xs font-semibold text-[#1f2937]">{item.question}</p>
                   <p className="text-[11px] text-[#6b7280]">
-                    उत्तरदाता: {item.expert} • {item.date}
+                    {lang === "hi" ? "उत्तरदाता: " : "Answered by: "}{item.expert} • {item.date}
                   </p>
                 </div>
               ))}

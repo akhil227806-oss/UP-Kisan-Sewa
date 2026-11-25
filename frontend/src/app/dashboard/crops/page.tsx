@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { Card } from "@/components/ui/Card";
 import { useI18n } from "@/lib/i18n";
+import { useAuth } from "@/lib/auth";
 
 interface CropRecord {
   id: string;
@@ -42,6 +43,7 @@ const DEFAULT_CROPS: CropRecord[] = [
 
 export default function MyCropsDashboard() {
   const { lang } = useI18n();
+  const { token, user } = useAuth();
   const [crops, setCrops] = useState<CropRecord[]>(DEFAULT_CROPS);
   const [showAdd, setShowAdd] = useState(false);
 
@@ -51,16 +53,35 @@ export default function MyCropsDashboard() {
   const [area, setArea] = useState("");
   const [sowingDate, setSowingDate] = useState("");
 
-  useEffect(() => {
+  const effectiveToken = token || (typeof window !== "undefined" ? localStorage.getItem("uks_token") || localStorage.getItem("admin_token") || "" : "");
+
+  const loadCrops = async () => {
+    try {
+      const res = await fetch("/api/v1/farmers/me/crops", {
+        headers: effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {},
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          setCrops(data);
+          return;
+        }
+      }
+    } catch {}
+
     const saved = localStorage.getItem("my_farmer_crops");
     if (saved) {
       try {
         setCrops(JSON.parse(saved));
       } catch (e) {}
     }
-  }, []);
+  };
 
-  const handleSaveCrop = (e: React.FormEvent) => {
+  useEffect(() => {
+    loadCrops();
+  }, [effectiveToken, user]);
+
+  const handleSaveCrop = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!area.trim() || !sowingDate) return;
 
@@ -86,12 +107,32 @@ export default function MyCropsDashboard() {
     setShowAdd(false);
     setArea("");
     setSowingDate("");
+
+    // Backend sync
+    try {
+      await fetch("/api/v1/farmers/me/crops", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {}),
+        },
+        body: JSON.stringify(newCrop),
+      });
+    } catch {}
   };
 
-  const handleDeleteCrop = (id: string) => {
+  const handleDeleteCrop = async (id: string) => {
     const updated = crops.filter((c) => c.id !== id);
     setCrops(updated);
     localStorage.setItem("my_farmer_crops", JSON.stringify(updated));
+
+    // Backend sync
+    try {
+      await fetch(`/api/v1/farmers/me/crops/${id}`, {
+        method: "DELETE",
+        headers: effectiveToken ? { Authorization: `Bearer ${effectiveToken}` } : {},
+      });
+    } catch {}
   };
 
   return (
@@ -106,7 +147,7 @@ export default function MyCropsDashboard() {
       <div className="flex flex-wrap items-center justify-between gap-3 my-6">
         <div>
           <h1 className="text-2xl font-black text-[#14532d]">
-            {lang === "hi" ? "मेरी फसल प्रबंधन (My Crops)" : "My Crop Management"}
+            {lang === "hi" ? "मेरी फसल प्रबंधन" : "My Crop Management"}
           </h1>
           <p className="text-xs text-[#6b7280]">
             {lang === "hi"
@@ -196,38 +237,54 @@ export default function MyCropsDashboard() {
       )}
 
       <div className="space-y-4">
-        {crops.map((c) => (
-          <div
-            key={c.id}
-            className="p-5 bg-white border border-[#e5e7eb] rounded-xl flex flex-wrap items-center justify-between gap-4 shadow-xs"
-          >
-            <div>
-              <div className="flex items-center gap-2">
-                <Sprout className="size-5 text-[#15803d]" />
-                <h3 className="text-base font-bold text-[#14532d]">{c.name}</h3>
+        {crops.map((c) => {
+          const cropImg = c.name.includes("सरसों") || (c.name || "").toLowerCase().includes("mustard")
+            ? "/crops/mustard.jpg"
+            : c.name.includes("धान") || (c.name || "").toLowerCase().includes("paddy")
+            ? "/crops/paddy.jpg"
+            : c.name.includes("गन्ना") || (c.name || "").toLowerCase().includes("sugarcane")
+            ? "/crops/sugarcane.jpg"
+            : c.name.includes("अरहर") || (c.name || "").toLowerCase().includes("arhar")
+            ? "/crops/arhar.jpg"
+            : "/crops/wheat.jpg";
+
+          return (
+            <div
+              key={c.id}
+              className="p-4 bg-white border border-[#e5e7eb] rounded-xl flex flex-wrap items-center justify-between gap-4 shadow-xs"
+            >
+              <div className="flex items-center gap-3">
+                <img
+                  src={cropImg}
+                  alt={c.name}
+                  className="size-14 rounded-lg object-cover border border-[#e5e7eb] shrink-0"
+                />
+                <div>
+                  <h3 className="text-base font-bold text-[#14532d]">{c.name}</h3>
+                  <p className="text-xs text-[#6b7280] mt-1">
+                    {lang === "hi" ? "सत्र: " : "Season: "}<strong>{c.season}</strong> • {lang === "hi" ? "क्षेत्रफल: " : "Area: "}<strong>{c.area}</strong> • {lang === "hi" ? "बुवाई: " : "Sown: "}<strong>{c.sowingDate}</strong>
+                  </p>
+                </div>
               </div>
-              <p className="text-xs text-[#6b7280] mt-1">
-                {lang === "hi" ? "सत्र: " : "Season: "}<strong>{c.season}</strong> • {lang === "hi" ? "क्षेत्रफल: " : "Area: "}<strong>{c.area}</strong> • {lang === "hi" ? "बुवाई: " : "Sown: "}<strong>{c.sowingDate}</strong>
-              </p>
+              <div className="flex items-center gap-3">
+                <Badge variant="success">{c.stage}</Badge>
+                <Link
+                  href={`/crops/${c.slug}`}
+                  className="text-xs font-bold text-[#15803d] hover:underline bg-[#dcfce7] px-3 py-1.5 rounded-lg"
+                >
+                  {lang === "hi" ? "सलाह पैकेज देखें →" : "View Package →"}
+                </Link>
+                <button
+                  onClick={() => handleDeleteCrop(c.id)}
+                  className="p-1.5 text-gray-400 hover:text-red-500 rounded transition-colors"
+                  title={lang === "hi" ? "हटाएं" : "Delete"}
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="success">{c.stage}</Badge>
-              <Link
-                href={`/crops/${c.slug}`}
-                className="text-xs font-bold text-[#15803d] hover:underline bg-[#dcfce7] px-3 py-1.5 rounded-lg"
-              >
-                {lang === "hi" ? "सलाह पैकेज देखें →" : "View Package →"}
-              </Link>
-              <button
-                onClick={() => handleDeleteCrop(c.id)}
-                className="p-1.5 text-gray-400 hover:text-red-500 rounded transition-colors"
-                title={lang === "hi" ? "हटाएं" : "Delete"}
-              >
-                <Trash2 className="size-4" />
-              </button>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

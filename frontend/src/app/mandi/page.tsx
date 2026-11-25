@@ -237,6 +237,50 @@ export default function MandiPage() {
           : "Mandi prices are reported directly from Government of India Agmarknet / data.gov.in wholesale market records. Verify arrival date and market name."}
       </Alert>
 
+      {/* Featured Commodities Visual Cards */}
+      <div className="mb-8">
+        <h3 className="text-base font-extrabold text-[#14532d] mb-3 flex items-center gap-2">
+          <TrendingUp className="size-5 text-[#15803d]" />
+          <span>{lang === "hi" ? "प्रमुख कृषि जिंस — आज का मॉडल भाव (₹/कुंतल)" : "Key Commodities — Today's Modal Rates (₹/Quintal)"}</span>
+        </h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+          {[
+            { name_hi: "गेहूँ", name_en: "Wheat", rate: "₹2,475", change: "+₹30", img: "/crops/wheat.jpg" },
+            { name_hi: "धान (कॉमन)", name_en: "Paddy", rate: "₹2,260", change: "+₹15", img: "/crops/paddy.jpg" },
+            { name_hi: "सरसों", name_en: "Mustard", rate: "₹5,450", change: "+₹50", img: "/crops/mustard.jpg" },
+            { name_hi: "आलू", name_en: "Potato", rate: "₹1,220", change: "+₹20", img: "/crops/potato.jpg" },
+            { name_hi: "चना (देसी)", name_en: "Gram", rate: "₹6,100", change: "+₹80", img: "/crops/gram.jpg" },
+            { name_hi: "मक्का", name_en: "Maize", rate: "₹2,150", change: "+₹25", img: "/crops/maize.jpg" },
+          ].map((item, idx) => (
+            <div
+              key={idx}
+              onClick={() => setCommodity(lang === "hi" ? item.name_hi : item.name_en)}
+              className="bg-white border border-[#e5e7eb] rounded-xl overflow-hidden shadow-xs hover:border-[#15803d] hover:shadow-md transition-all cursor-pointer group"
+            >
+              <div className="h-20 w-full overflow-hidden relative">
+                <img
+                  src={item.img}
+                  alt={item.name_en}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <span className="absolute bottom-1.5 right-1.5 bg-[#dcfce7] text-[#15803d] text-[10px] font-bold px-1.5 py-0.5 rounded shadow-xs">
+                  {item.change}
+                </span>
+              </div>
+              <div className="p-2.5 text-center">
+                <p className="font-extrabold text-[#14532d] text-xs truncate">
+                  {lang === "hi" ? item.name_hi : item.name_en}
+                </p>
+                <p className="font-black text-[#15803d] text-sm mt-0.5">{item.rate}</p>
+                <span className="text-[10px] text-[#6b7280]">
+                  {lang === "hi" ? "क्लिक कर फ़िल्टर करें" : "Click to filter"}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Filter and Selection Bar */}
       <div className="bg-white p-4 sm:p-5 rounded-xl border border-[#e5e7eb] shadow-xs mb-8">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

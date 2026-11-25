@@ -10,6 +10,14 @@ import { Badge } from "@/components/ui/Badge";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
 import { useI18n } from "@/lib/i18n";
 
+const SCHEME_IMAGES: Record<string, string> = {
+  "pm-kisan": "/schemes/pm-kisan.jpg",
+  "pmfby": "/schemes/pmfby.jpg",
+  "kusum-solar-pump": "/schemes/solar-pump.jpg",
+  "up-khet-talab": "/schemes/khet-talab.jpg",
+  "krishi-yantrikaran-token": "/schemes/mechanization.jpg",
+};
+
 export default function SchemesPage() {
   const { lang } = useI18n();
   const [category, setCategory] = useState("all");
@@ -172,39 +180,50 @@ export default function SchemesPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {filtered.map((scheme) => (
-          <Card key={scheme.slug} className="flex flex-col justify-between">
-            <div>
-              <CardHeader className="bg-[#f8faf5]">
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="text-base sm:text-lg text-[#14532d] flex items-center gap-2">
-                    <FileText className="size-5 text-[#15803d] shrink-0" />
-                    <span>{lang === "hi" ? scheme.name_hi : scheme.name_en}</span>
-                  </CardTitle>
-                  <Badge variant="success" size="sm">
-                    {lang === "hi" ? scheme.category_hi : (scheme.category_id === "central" ? "Central Scheme" : scheme.category_id === "insurance" ? "Crop Insurance" : scheme.category_id === "irrigation" ? "Irrigation & Solar" : scheme.category_id === "subsidy" ? "Farm Subsidy" : "State Scheme")}
-                  </Badge>
+        {filtered.map((scheme) => {
+          const schemeImg = SCHEME_IMAGES[scheme.slug] || "/schemes/pm-kisan.jpg";
+          return (
+            <Card key={scheme.slug} className="flex flex-col justify-between overflow-hidden group">
+              <div>
+                <div className="relative h-44 w-full overflow-hidden bg-[#e5e7eb]">
+                  <img
+                    src={schemeImg}
+                    alt={scheme.name_hi}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute top-3 right-3">
+                    <Badge variant="accent" size="sm" className="shadow-md">
+                      {lang === "hi" ? scheme.category_hi : (scheme.category_id === "central" ? "Central Scheme" : scheme.category_id === "insurance" ? "Crop Insurance" : scheme.category_id === "irrigation" ? "Irrigation & Solar" : scheme.category_id === "subsidy" ? "Farm Subsidy" : "State Scheme")}
+                    </Badge>
+                  </div>
+                  <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <h3 className="font-black text-lg drop-shadow-md flex items-center gap-2">
+                      <FileText className="size-5 text-[#fef08a] shrink-0" />
+                      <span>{lang === "hi" ? scheme.name_hi : scheme.name_en}</span>
+                    </h3>
+                  </div>
                 </div>
-              </CardHeader>
 
-              <CardContent className="space-y-3 pt-4 text-xs sm:text-sm">
-                <div>
-                  <strong className="text-[#14532d] block mb-0.5">
-                    {lang === "hi" ? "अनुदान एवं लाभ:" : "Benefits & Subsidy:"}
-                  </strong>
-                  <p className="text-[#374151] bg-[#f0fdf4] p-2.5 rounded-lg border border-[#bbf7d0] leading-relaxed">
-                    {scheme.benefit}
-                  </p>
-                </div>
+                <CardContent className="space-y-3 pt-4 text-xs sm:text-sm">
+                  <div>
+                    <strong className="text-[#14532d] block mb-0.5">
+                      {lang === "hi" ? "अनुदान एवं लाभ:" : "Benefits & Subsidy:"}
+                    </strong>
+                    <p className="text-[#374151] bg-[#f0fdf4] p-2.5 rounded-lg border border-[#bbf7d0] leading-relaxed">
+                      {scheme.benefit}
+                    </p>
+                  </div>
 
-                <div>
-                  <strong className="text-[#14532d] block mb-0.5">
-                    {lang === "hi" ? "पात्रता मानदंड:" : "Eligibility Criteria:"}
-                  </strong>
-                  <p className="text-[#4b5563] leading-relaxed">{scheme.eligibility}</p>
-                </div>
-              </CardContent>
-            </div>
+                  <div>
+                    <strong className="text-[#14532d] block mb-0.5">
+                      {lang === "hi" ? "पात्रता मानदंड:" : "Eligibility Criteria:"}
+                    </strong>
+                    <p className="text-[#4b5563] leading-relaxed">{scheme.eligibility}</p>
+                  </div>
+                </CardContent>
+              </div>
 
             <div className="p-4 bg-[#f8faf5] border-t border-[#e5e7eb] flex flex-col gap-2">
               <SourceBadge sourceName={scheme.source} updatedAt={scheme.updatedAt} />
@@ -228,7 +247,8 @@ export default function SchemesPage() {
               </div>
             </div>
           </Card>
-        ))}
+        );
+      })}
       </div>
     </div>
   );

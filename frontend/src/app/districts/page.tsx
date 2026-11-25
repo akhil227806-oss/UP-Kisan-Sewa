@@ -95,66 +95,91 @@ export default function DistrictsPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        {filtered.map((d) => (
-          <Card key={d.code} className="flex flex-col justify-between hover:border-[#86efac] transition-all">
-            <div>
-              <CardHeader className="bg-[#f8faf5]">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="flex items-center gap-1.5 text-base text-[#14532d]">
-                    <MapPin className="size-4 text-[#f97316]" />
-                    <span>{lang === "hi" ? d.name_hi : d.name_en}</span>
-                  </CardTitle>
-                  <Badge variant="success" size="sm">
-                    {lang === "hi" ? d.division_hi : d.division_en}
-                  </Badge>
-                </div>
-                <p className="text-[11px] text-[#6b7280] mt-1">
-                  {lang === "hi" ? d.zone_hi : d.zone_en}
-                </p>
-              </CardHeader>
+        {filtered.map((d) => {
+          const cropsLower = (d.majorCrops_en || "").toLowerCase();
+          const cropImg = cropsLower.includes("mustard")
+            ? "/crops/mustard.jpg"
+            : cropsLower.includes("paddy") || cropsLower.includes("rice")
+            ? "/crops/paddy.jpg"
+            : cropsLower.includes("sugarcane")
+            ? "/crops/sugarcane.jpg"
+            : cropsLower.includes("potato")
+            ? "/crops/potato.jpg"
+            : cropsLower.includes("gram") || cropsLower.includes("pulse") || cropsLower.includes("arhar")
+            ? "/crops/gram.jpg"
+            : "/crops/wheat.jpg";
 
-              <CardContent className="space-y-2.5 pt-4 text-xs sm:text-sm">
-                <div>
-                  <strong className="text-[#14532d] block text-xs">
-                    {lang === "hi" ? "प्रमुख फसलें:" : "Major Crops:"}
-                  </strong>
-                  <span className="text-[#374151] font-medium">
-                    {lang === "hi" ? d.majorCrops_hi : d.majorCrops_en}
-                  </span>
+          return (
+            <Card key={d.code} className="flex flex-col justify-between hover:border-[#86efac] transition-all overflow-hidden shadow-xs hover:shadow-md">
+              <div>
+                <div className="h-28 w-full relative overflow-hidden bg-black/10">
+                  <img
+                    src={cropImg}
+                    alt={d.name_en}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-2 left-3 right-3 flex items-center justify-between text-white">
+                    <span className="font-black text-sm flex items-center gap-1">
+                      <MapPin className="size-3.5 text-[#f97316]" />
+                      <span>{lang === "hi" ? d.name_hi : d.name_en}</span>
+                    </span>
+                    <span className="text-[10px] font-bold bg-[#15803d] px-2 py-0.5 rounded-full shadow-xs">
+                      {lang === "hi" ? d.division_hi : d.division_en}
+                    </span>
+                  </div>
                 </div>
-                <div>
-                  <strong className="text-[#14532d] block text-xs">
-                    {lang === "hi" ? "संबद्ध KVK केंद्र:" : "Associated KVK Center:"}
-                  </strong>
-                  <span className="text-[#4b5563]">{d.kvk}</span>
-                </div>
-                <div>
-                  <strong className="text-[#14532d] block text-xs">
-                    {lang === "hi" ? "प्रमुख कृषि मंडी:" : "Principal Agri Mandi:"}
-                  </strong>
-                  <span className="text-[#4b5563]">{d.mandi}</span>
-                </div>
-              </CardContent>
-            </div>
 
-            <div className="p-3 bg-[#f8faf5] border-t border-[#e5e7eb] flex items-center justify-between text-xs">
-              <Link
-                href={`/mandi?district=${encodeURIComponent(lang === "hi" ? d.name_hi : d.name_en)}`}
-                className="font-bold text-[#15803d] hover:underline flex items-center gap-1"
-              >
-                <TrendingUp className="size-3.5" />
-                <span>{lang === "hi" ? "मंडी भाव" : "Mandi Bhav"}</span>
-              </Link>
-              <Link
-                href={`/weather?district=${encodeURIComponent(lang === "hi" ? d.name_hi : d.name_en)}`}
-                className="font-bold text-[#0284c7] hover:underline flex items-center gap-1"
-              >
-                <CloudSun className="size-3.5" />
-                <span>{lang === "hi" ? "मौसम" : "Weather"}</span>
-              </Link>
-            </div>
-          </Card>
-        ))}
+                <div className="p-4 space-y-2.5 text-xs sm:text-sm">
+                  <div>
+                    <span className="text-[11px] text-[#6b7280] font-semibold block">
+                      {lang === "hi" ? d.zone_hi : d.zone_en}
+                    </span>
+                  </div>
+                  <div>
+                    <strong className="text-[#14532d] block text-xs">
+                      {lang === "hi" ? "प्रमुख फसलें:" : "Major Crops:"}
+                    </strong>
+                    <span className="text-[#374151] font-medium">
+                      {lang === "hi" ? d.majorCrops_hi : d.majorCrops_en}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-1">
+                    <div className="bg-[#f8faf5] p-2 rounded-lg border border-[#e5e7eb]">
+                      <strong className="text-[#14532d] block text-[10px]">
+                        {lang === "hi" ? "संबद्ध KVK:" : "Associated KVK:"}
+                      </strong>
+                      <span className="text-[#4b5563] truncate block">{d.kvk}</span>
+                    </div>
+                    <div className="bg-[#f8faf5] p-2 rounded-lg border border-[#e5e7eb]">
+                      <strong className="text-[#14532d] block text-[10px]">
+                        {lang === "hi" ? "मुख्य मंडी:" : "Principal Mandi:"}
+                      </strong>
+                      <span className="text-[#4b5563] truncate block">{d.mandi}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#f8faf5] border-t border-[#e5e7eb] flex items-center justify-between text-xs">
+                <Link
+                  href={`/mandi?district=${encodeURIComponent(lang === "hi" ? d.name_hi : d.name_en)}`}
+                  className="font-bold text-[#15803d] hover:underline flex items-center gap-1"
+                >
+                  <TrendingUp className="size-3.5" />
+                  <span>{lang === "hi" ? "मंडी भाव" : "Mandi Bhav"}</span>
+                </Link>
+                <Link
+                  href={`/weather?district=${encodeURIComponent(lang === "hi" ? d.name_hi : d.name_en)}`}
+                  className="font-bold text-[#0284c7] hover:underline flex items-center gap-1"
+                >
+                  <CloudSun className="size-3.5" />
+                  <span>{lang === "hi" ? "मौसम" : "Weather"}</span>
+                </Link>
+              </div>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

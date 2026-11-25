@@ -131,6 +131,62 @@ export default function AboutPage() {
           </div>
         </div>
 
+        {/* Project Leadership & Mentorship Showcase */}
+        <div>
+          <h3 className="text-xl font-bold text-[#14532d] mb-4">
+            {lang === "hi" ? "परियोजना मार्गदर्शक एवं विकास टीम" : "Project Leadership & Mentorship"}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white border border-[#bbf7d0] rounded-2xl p-5 shadow-xs flex items-center gap-4">
+              <div className="size-20 rounded-full overflow-hidden border-2 border-[#15803d] shrink-0 bg-[#dcfce7]">
+                <img
+                  src="/contactus/neeraj.png"
+                  alt="Dr. Neeraj Kumar Singh"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#15803d] bg-[#dcfce7] px-2 py-0.5 rounded">
+                  {lang === "hi" ? "परियोजना मार्गदर्शक" : "Faculty Mentor & Guide"}
+                </span>
+                <h4 className="font-extrabold text-[#14532d] text-base mt-1">
+                  {lang === "hi" ? "डॉ. नीरज कुमार सिंह" : "Dr. Neeraj Kumar Singh"}
+                </h4>
+                <p className="text-xs text-[#4b5563]">
+                  {lang === "hi" ? "सह-प्राध्यापक, MCAET" : "Associate Professor, MCAET"}
+                </p>
+                <p className="text-[11px] text-[#6b7280]">
+                  {lang === "hi" ? "आचार्य नरेंद्र देव कृषि एवं प्रौद्योगिक विश्वविद्यालय (NDUAT), अयोध्या" : "A.N.D. University of Agriculture & Technology, Ayodhya"}
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-white border border-[#bbf7d0] rounded-2xl p-5 shadow-xs flex items-center gap-4">
+              <div className="size-20 rounded-full overflow-hidden border-2 border-[#15803d] shrink-0 bg-[#dcfce7]">
+                <img
+                  src="/contactus/Akhil.png"
+                  alt="Akhil Yadav"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#0284c7] bg-[#e0f2fe] px-2 py-0.5 rounded">
+                  {lang === "hi" ? "मुख्य आर्किटेक्ट एवं डेवलपर" : "Lead Architect & Developer"}
+                </span>
+                <h4 className="font-extrabold text-[#14532d] text-base mt-1">
+                  {lang === "hi" ? "अखिल यादव" : "Akhil Yadav"}
+                </h4>
+                <p className="text-xs text-[#4b5563]">
+                  {lang === "hi" ? "बी.टेक कृषि अभियांत्रिकी, MCAET" : "B.Tech Agricultural Engineering, MCAET"}
+                </p>
+                <p className="text-[11px] text-[#6b7280]">
+                  {lang === "hi" ? "अवध किसान सेवा डिजिटल आर्किटेक्चर" : "Awadh Kisan Seva Digital Architecture"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Pillars */}
         <div>
           <h3 className="text-xl font-bold text-[#14532d] mb-3">

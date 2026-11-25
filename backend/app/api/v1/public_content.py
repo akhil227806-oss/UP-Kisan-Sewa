@@ -199,9 +199,28 @@ async def list_advisories() -> list[dict]:
 
 
 @router.get("/videos")
-async def list_videos() -> list[dict]:
+async def list_videos(
+    category: str | None = None,
+    q: str | None = None,
+    limit: int = Query(100, ge=1, le=100),
+) -> list[dict]:
     db = get_db()
-    return await db.videos.find(_public_filter(), {"_id": 0}).to_list(50)
+    filt: dict[str, Any] = {"status": "published"}
+    if category and category != "all":
+        filt["$or"] = [
+            {"category": {"$regex": category, "$options": "i"}},
+            {"category_en": {"$regex": category, "$options": "i"}},
+        ]
+    if q and q.strip():
+        search_term = q.strip()
+        filt["$or"] = [
+            {"title": {"$regex": search_term, "$options": "i"}},
+            {"title_hi": {"$regex": search_term, "$options": "i"}},
+            {"description": {"$regex": search_term, "$options": "i"}},
+            {"channel": {"$regex": search_term, "$options": "i"}},
+        ]
+    items = await db.videos.find(filt, {"_id": 0}).limit(limit).to_list(limit)
+    return items
 
 
 @router.get("/kvk")
