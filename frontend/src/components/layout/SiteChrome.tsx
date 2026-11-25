@@ -30,6 +30,7 @@ import clsx from "clsx";
 import { useI18n } from "@/lib/i18n";
 import { useAuth } from "@/lib/auth";
 import { GoogleTranslateWidget } from "./GoogleTranslateWidget";
+import { KisanChatbot } from "@/components/chat/KisanChatbot";
 
 export function SiteChrome({ children }: { children: React.ReactNode }) {
   const { t, lang, setLang, fontSize, setFontSize } = useI18n();
@@ -1116,6 +1117,9 @@ export function SiteChrome({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </footer>
+
+      {/* 24x7 AI Kisan Sahayak Chatbot */}
+      <KisanChatbot />
     </div>
   );
 }

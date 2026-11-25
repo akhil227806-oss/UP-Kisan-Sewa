@@ -65,8 +65,9 @@ export default function HomePage() {
       title_en: "Crop Information",
       desc_hi: "खरीफ, रबी व जायद फसलों का प्रामाणिक वैज्ञानिक पैकेज व किस्में।",
       desc_en: "Agronomic packages, certified varieties, and sowing schedules.",
-      icon: <Sprout className="size-6 text-[#15803d]" />,
+      icon: <Sprout className="size-5 text-[#15803d]" />,
       badge: lang === "hi" ? "सत्यापित" : "Verified",
+      image: "/modules/crop-info.jpg",
     },
     {
       href: "/mandi",
@@ -74,8 +75,9 @@ export default function HomePage() {
       title_en: "Mandi Prices",
       desc_hi: "उत्तर प्रदेश की मंडियों के दैनिक थोक भाव (Agmarknet डेटा)।",
       desc_en: "Daily wholesale arrivals & modal commodity rates from Agmarknet.",
-      icon: <TrendingUp className="size-6 text-[#15803d]" />,
+      icon: <TrendingUp className="size-5 text-[#15803d]" />,
       badge: lang === "hi" ? "दैनिक" : "Daily",
+      image: "/modules/mandi-prices.jpg",
     },
     {
       href: "/weather",
@@ -83,8 +85,9 @@ export default function HomePage() {
       title_en: "Weather Forecast",
       desc_hi: "आईएमडी (IMD) मौसम वेधशाला आधारित 5-दिवसीय जिला कृषि सलाह।",
       desc_en: "5-day district agro-weather bulletin and advisory by IMD.",
-      icon: <CloudSun className="size-6 text-[#eab308]" />,
+      icon: <CloudSun className="size-5 text-[#eab308]" />,
       badge: lang === "hi" ? "IMD अधिकृत" : "IMD Verified",
+      image: "/modules/weather-forecast.jpg",
     },
     {
       href: "/schemes",
@@ -92,8 +95,9 @@ export default function HomePage() {
       title_en: "Government Schemes",
       desc_hi: "पीएम-किसान, फसल बीमा, कुसुम व राज्य कृषि अनुदान संदर्शिका।",
       desc_en: "Central & UP state farmer welfare schemes and official links.",
-      icon: <FileText className="size-6 text-[#0284c7]" />,
+      icon: <FileText className="size-5 text-[#0284c7]" />,
       badge: lang === "hi" ? "सरकारी पोर्टल" : "Govt Portal",
+      image: "/modules/gov-schemes.jpg",
     },
     {
       href: "/diseases",
@@ -101,8 +105,9 @@ export default function HomePage() {
       title_en: "Crop Diseases",
       desc_hi: "कवक, जीवाणु व विषाणु रोगों के लक्षण एवं वैज्ञानिक नियंत्रण।",
       desc_en: "Symptoms, causes, and expert-reviewed disease treatments.",
-      icon: <ShieldAlert className="size-6 text-[#dc2626]" />,
+      icon: <ShieldAlert className="size-5 text-[#dc2626]" />,
       badge: lang === "hi" ? "वैज्ञानिक उपचार" : "Scientific",
+      image: "/modules/crop-diseases.jpg",
     },
     {
       href: "/pests",
@@ -110,8 +115,9 @@ export default function HomePage() {
       title_en: "Pest Management",
       desc_hi: "जैविक व एकीकृत कीट प्रबंधन, फेरोमोन ट्रैप एवं मित्र कीट।",
       desc_en: "Integrated Pest Management, biological control, and safe practices.",
-      icon: <Bug className="size-6 text-[#d97706]" />,
+      icon: <Bug className="size-5 text-[#d97706]" />,
       badge: lang === "hi" ? "IPM तकनीक" : "IPM Method",
+      image: "/modules/pest-management.jpg",
     },
     {
       href: "/crop-calendar",
@@ -119,8 +125,9 @@ export default function HomePage() {
       title_en: "Crop Calendar",
       desc_hi: "माह-वार बुवाई, सिंचाई, खाद प्रबंधन एवं कृषि कार्य योजना।",
       desc_en: "Month-wise agronomic calendar and farming operations.",
-      icon: <Calendar className="size-6 text-[#14532d]" />,
+      icon: <Calendar className="size-5 text-[#14532d]" />,
       badge: lang === "hi" ? "मासिक" : "Monthly",
+      image: "/modules/crop-calendar.jpg",
     },
     {
       href: "/soil-health",
@@ -128,8 +135,9 @@ export default function HomePage() {
       title_en: "Soil Health & Testing",
       desc_hi: "खेत की मिट्टी जांच की 5-चरणीय विधि एवं निकटतम लैब डायरेक्टरी।",
       desc_en: "Soil sampling protocol and state soil testing lab directory.",
-      icon: <Layers className="size-6 text-[#854d0e]" />,
+      icon: <Layers className="size-5 text-[#854d0e]" />,
       badge: lang === "hi" ? "सॉइल कार्ड" : "Soil Card",
+      image: "/modules/soil-health.jpg",
     },
     {
       href: "/machinery",
@@ -137,8 +145,9 @@ export default function HomePage() {
       title_en: "Farm Machinery",
       desc_hi: "सुपर सीडर, रोटावेटर एवं कृषि यंत्रों पर 50% तक सरकारी सब्सिडी।",
       desc_en: "Modern farm tools, operational guides, and token subsidies.",
-      icon: <Wrench className="size-6 text-[#6b7280]" />,
+      icon: <Wrench className="size-5 text-[#6b7280]" />,
       badge: lang === "hi" ? "टोकन अनुदान" : "Subsidies",
+      image: "/modules/farm-machinery.jpg",
     },
     {
       href: "/kvk",
@@ -146,8 +155,9 @@ export default function HomePage() {
       title_en: "KVK & Universities",
       desc_hi: "उ.प्र. के कृषि विज्ञान केंद्रों के संपर्क सूत्र, प्रशिक्षण एवं शोध।",
       desc_en: "Krishi Vigyan Kendra directory and university extension cells.",
-      icon: <GraduationCap className="size-6 text-[#14532d]" />,
+      icon: <GraduationCap className="size-5 text-[#14532d]" />,
       badge: lang === "hi" ? "NDUAT केंद्र" : "NDUAT Centers",
+      image: "/modules/kvk-universities.jpg",
     },
     {
       href: "/knowledge",
@@ -155,8 +165,9 @@ export default function HomePage() {
       title_en: "Knowledge Center",
       desc_hi: "प्राकृतिक खेती, बागवानी, डेयरी, पशुपालन व मशरूम उत्पादन।",
       desc_en: "Scientific guides on natural farming, dairy, and horticulture.",
-      icon: <BookOpen className="size-6 text-[#15803d]" />,
+      icon: <BookOpen className="size-5 text-[#15803d]" />,
       badge: lang === "hi" ? "मार्गदर्शिका" : "Guides",
+      image: "/modules/knowledge-center.jpg",
     },
     {
       href: "/helpline",
@@ -164,8 +175,9 @@ export default function HomePage() {
       title_en: "Helplines",
       desc_hi: "किसान कॉल सेंटर (1800-180-1551) व आपातकालीन संपर्क नंबर।",
       desc_en: "Toll-free Kisan Call Centre and emergency department contacts.",
-      icon: <Phone className="size-6 text-[#15803d]" />,
+      icon: <Phone className="size-5 text-[#15803d]" />,
       badge: lang === "hi" ? "टोल-फ्री" : "Toll-Free",
+      image: "/modules/helpline.jpg",
     },
   ];
 
@@ -309,26 +321,47 @@ export default function HomePage() {
             <Link
               key={idx}
               href={srv.href}
-              className="agri-card p-5 flex flex-col justify-between group no-underline"
+              className="bg-white rounded-2xl border border-[#e5e7eb] overflow-hidden shadow-xs hover:shadow-md hover:border-[#86efac] transition-all flex flex-col justify-between group no-underline"
             >
               <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="p-2.5 rounded-xl bg-[#f0fdf4] group-hover:bg-[#dcfce7] transition-colors border border-[#bbf7d0]">
+                {/* Visual Cover Banner Image with Floating Badge & Icon */}
+                <div className="relative h-36 w-full bg-gray-100 overflow-hidden">
+                  <img
+                    src={srv.image}
+                    alt={lang === "hi" ? srv.title_hi : srv.title_en}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = "/crops/wheat.jpg";
+                    }}
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+
+                  {/* Floating Category/Status Badge */}
+                  <div className="absolute top-2.5 right-2.5">
+                    <span className="bg-white/95 backdrop-blur-xs text-[#14532d] text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-white/60 shadow-xs">
+                      {srv.badge}
+                    </span>
+                  </div>
+
+                  {/* Floating Icon Pill */}
+                  <div className="absolute bottom-2.5 left-2.5 size-8 rounded-xl bg-white/95 backdrop-blur-xs shadow-sm border border-white flex items-center justify-center">
                     {srv.icon}
                   </div>
-                  <Badge variant="outline" size="sm">{srv.badge}</Badge>
                 </div>
 
-                <h3 className="font-bold text-base text-[#14532d] group-hover:text-[#15803d] transition-colors mb-1.5">
-                  {lang === "hi" ? srv.title_hi : srv.title_en}
-                </h3>
+                {/* Card Content */}
+                <div className="p-4 sm:p-5">
+                  <h3 className="font-black text-base text-[#14532d] group-hover:text-[#15803d] transition-colors mb-1.5">
+                    {lang === "hi" ? srv.title_hi : srv.title_en}
+                  </h3>
 
-                <p className="text-xs text-[#4b5563] leading-relaxed">
-                  {lang === "hi" ? srv.desc_hi : srv.desc_en}
-                </p>
+                  <p className="text-xs text-[#4b5563] leading-relaxed line-clamp-2">
+                    {lang === "hi" ? srv.desc_hi : srv.desc_en}
+                  </p>
+                </div>
               </div>
 
-              <div className="pt-4 mt-2 border-t border-[#f3f4f6] flex items-center justify-between text-xs font-bold text-[#15803d]">
+              <div className="px-4 sm:px-5 py-3 bg-[#f8faf5] border-t border-[#f3f4f6] flex items-center justify-between text-xs font-bold text-[#15803d]">
                 <span>{lang === "hi" ? "विस्तार से देखें" : "Explore"}</span>
                 <ArrowRight className="size-3.5 group-hover:translate-x-1 transition-transform" />
               </div>
